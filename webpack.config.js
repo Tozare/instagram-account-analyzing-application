@@ -6,12 +6,14 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const config = {
   mode: isProd ? 'production' : 'development',
-  entry: {
-    index: './src/index.tsx',
-  },
+  // entry: {
+  //   index: './src/index.tsx',
+  // },
+  entry: ["babel-polyfill", "./src/index.tsx"],
   output: {
     path: resolve(__dirname, 'dist'),
     filename: '[name].js',
+    publicPath: '/'
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -27,7 +29,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Babel + TypeScript + React = ❤️',
+      title: 'statinst️',
       template: 'src/index.html',
     }),
   ],
@@ -43,11 +45,13 @@ if (isProd) {
   // for more information, see https://webpack.js.org/configuration/dev-server
   config.devServer = {
     port: 8080,
+    https: true,
     open: true,
     hot: true,
     compress: true,
-    stats: 'errors-only',
+    // stats: 'errors-only',
     overlay: true,
+    historyApiFallback: true,
   };
 }
 

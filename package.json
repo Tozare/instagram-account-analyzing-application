@@ -7,13 +7,24 @@
   "license": "MIT",
   "scripts": {
     "check-types": "tsc",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --https --color --progress",
     "build": "cross-env NODE_ENV=production webpack --color --progress",
     "start": "serve dist"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@chakra-ui/icons": "^1.0.15",
+    "@chakra-ui/react": "^1.6.6",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@types/react-router-dom": "^5.1.8",
+    "effector": "^22.1.0",
+    "effector-react": "^22.0.4",
+    "framer-motion": "^4.1.17",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "react-icons": "^4.2.0",
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
@@ -24,6 +35,8 @@
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.3",
     "babel-loader": "^8.0.6",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
     "cross-env": "^6.0.3",
     "html-webpack-plugin": "^3.2.0",
     "serve": "^11.3.0",
