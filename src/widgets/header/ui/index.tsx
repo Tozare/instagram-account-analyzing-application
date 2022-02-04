@@ -22,7 +22,7 @@ export const Header = () => {
 
 
     return (
-        <div style={{width: "100%", height: "auto"}}>
+        <div style={{width: "100%", height: "65px"}}>
             <Flex width={"100%"} height={"65px"} alignItems={"center"} backgroundColor={"#F3F5F7"}>
                 <Box marginLeft={"20px"}>
                     <Image height="55px" width={"55px"} src={'../../../../images/logo.png'}/>
@@ -36,12 +36,27 @@ export const Header = () => {
                         fontWeight={500}
                         lineHeight={"65px"}
                         height={"65px"}
-                        borderBottom={location.pathname.includes("/features") ? "2.5px solid #2F2F2F" : ""}
+                        borderBottom={location.pathname.includes("/home") ? "2.5px solid #2F2F2F" : ""}
                         onClick={() => {
-                            history.push('/features');
+                            history.push('/home');
                         }}
                     >
-                        features
+                        home
+                    </Text>
+                    <Text
+                        paddingLeft={"7px"}
+                        paddingRight={"7px"}
+                        _hover={{color: "#ED8936"}}
+                        fontSize={"16px"}
+                        fontWeight={500}
+                        lineHeight={"65px"}
+                        height={"65px"}
+                        borderBottom={location.pathname.includes("/tutorials") ? "2.5px solid #2F2F2F" : ""}
+                        onClick={() => {
+                            history.push('/tutorials');
+                        }}
+                    >
+                        tutorials
                     </Text>
                     <Text
                         paddingLeft={"7px"}
@@ -84,12 +99,28 @@ export const Header = () => {
                         lineHeight={"65px"}
                         height={"65px"}
                         fontWeight={500}
-                        borderBottom={location.pathname.includes("/subscribers") ? "2.5px solid #2F2F2F" : ""}
+                        borderBottom={location.pathname.includes("/insights") ? "2.5px solid #2F2F2F" : ""}
                         onClick={() => {
-                            history.push('/subscribers');
+                            history.push('/comments');
                         }}
                     >
-                        subscribers
+                        comments
+                    </Text>
+                    <Text
+                        paddingLeft={"7px"}
+                        paddingRight={"7px"}
+                        marginLeft={"12px"}
+                        _hover={{color: "#ED8936"}}
+                        fontSize={"16px"}
+                        lineHeight={"65px"}
+                        height={"65px"}
+                        fontWeight={500}
+                        borderBottom={location.pathname.includes("/setup") ? "2.5px solid #2F2F2F" : ""}
+                        onClick={() => {
+                            history.push('/setup');
+                        }}
+                    >
+                        setup
                     </Text>
                 </Box>
                 <Box marginLeft={"auto"} marginRight={"20px"}>

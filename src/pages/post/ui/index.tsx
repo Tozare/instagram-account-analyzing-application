@@ -7,6 +7,7 @@ import {LeftMenuForPost} from "../../../widgets/left-menu-for-post/ui";
 import { useParams } from 'react-router-dom';
 import {CommentsManagement} from "../../../features/comments-management/ui";
 import {Comments} from "../../../widgets/comments/ui";
+import {graphApi} from "../../../shared/api/graph-api";
 
 export const Post = () => {
     const selectedPostId = mediaModel.selectors.useSelectedPostId();
@@ -17,18 +18,25 @@ export const Post = () => {
     useEffect(() => {
         console.log(mediaId);
         if (selectedPostId){
-            mediaModel.effects.getPostCommentsFx({postId: selectedPostId});
+            // mediaModel.effects.getPostCommentsFx({postId: selectedPostId});
+            // graphApi.getMediaInsights(mediaId);
+            mediaModel.effects.getPostInsightsFX({mediaId: selectedPostId});
         } else if(mediaId) {
-            mediaModel.effects.getPostCommentsFx({postId: mediaId});
+            // mediaModel.effects.getPostCommentsFx({postId: mediaId});
+            mediaModel.effects.getPostInsightsFX({mediaId: mediaId});
         }
+
     }, [selectedPostId])
+
+
 
 
     return (
         <div
             style={{
                 width: "100%",
-                height: "calc(100vh - 66px)",
+                minHeight: "calc(100vh - 66px)",
+                height: "auto",
                 backgroundColor:"#F1F1F1",
                 display: "flex",
                 flexDirection: "row"

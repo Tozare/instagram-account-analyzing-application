@@ -5,6 +5,7 @@ import {PostsGrid} from "../../widgets/posts-grid/ui";
 import {Flex} from "@chakra-ui/react";
 import {Header} from "../../widgets/header/ui";
 import {LeftMenu} from "../../widgets/left-menu-for-post/ui";
+import {graphApi} from "../../shared/api/graph-api";
 
 export const Dashboard = () => {
 

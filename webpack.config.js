@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
+const path = require('path')
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -17,6 +18,15 @@ const config = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    // modules: ['node_modules'],
+    alias: {
+      entities: path.resolve(__dirname, './src/entities/'),
+      features: path.resolve(__dirname, './src/features/'),
+      shared: path.resolve(__dirname, './src/shared/'),
+      pages: path.resolve(__dirname, './src/pages/'),
+      assets: path.resolve(__dirname, './src/assets/'),
+      widgets: path.resolve(__dirname, './src/widgets/'),
+    },
   },
   module: {
     rules: [
@@ -25,14 +35,18 @@ const config = {
         use: 'babel-loader',
         exclude: /node_modules/,
       },
+      { test: /\.css$/, exclude: [/node_modules/], use: ['style-loader', { loader: 'css-loader' }, 'to-string-loader'] },
     ],
   },
+
+
   plugins: [
     new HtmlWebpackPlugin({
       title: 'statinst️',
       template: 'src/index.html',
     }),
   ],
+
 };
 
 if (isProd) {

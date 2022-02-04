@@ -14,13 +14,13 @@ export const LeftMenuForPost = () => {
 
     const changeCommentsServiceState = (newState: CommentsServicesState) => {
         serviceModel.events.updateCommentsServiceState(newState);
-        console.log(newState)
     }
 
     return (
         <Flex
             width={"195px"}
-            height={"100%"}
+            height={"calc(100vh - 66px)"}
+            minHeight={"100%"}
             backgroundColor={"#FCFCFC"}
             paddingTop={"30px"}
             flexDirection={"column"}

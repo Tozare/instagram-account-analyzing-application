@@ -6,10 +6,11 @@ export const getAllMediaFromInstagramPage = (instagramPageId: string): Promise<a
             `${instagramPageId}/media`,
             {
                 access_token: GetFacebookToken(),
-                fields: "id,like_count,caption,media_url,media_type,timestamp,thumbnail_url,permalink",
+                fields: "id,like_count,owner,comments_count,username,caption,media_url,media_type,timestamp,thumbnail_url,permalink",
             },
             (response) => {
                 const data: any[] = response.data;
+                console.log(data);
                 resolve(data);
                 // resolve(response.data);
                 // response.data.forEach((mediaInfo) => {

@@ -1,0 +1,15 @@
+{
+  "extends": ["airbnb", "airbnb/hooks", "airbnb-typescript", "plugin:effector/recommended"],
+  "plugins": ["effector"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/quotes": [
+      "error",
+      "double"
+    ],
+    "react/react-in-jsx-scope": "off",
+    "import/prefer-default-export": 0
+  }
+}

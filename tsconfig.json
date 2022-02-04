@@ -9,9 +9,14 @@
     "allowJs": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./src",                             /* Base directory to resolve non-absolute module names. */
+    "paths": {
+      "pages/*": ["./pages/*"],
+      "widgets/*": ["./widgets/*"],
+      "features/*": ["./features/*"],
+      "entities/*": ["./entities/*"],
+      "shared/*": ["./shared/*"],
+    }
   },
-  "include": [
-    "src"
-  ]
 }

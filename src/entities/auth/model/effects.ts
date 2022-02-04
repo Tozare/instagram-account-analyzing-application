@@ -5,7 +5,7 @@ import {updateToken} from "./events";
 
 export const loginInFacebookFx = createEffect(async () => {
     const token = await authApi.loginFromFacebook();
-    console.log(token);
+    // console.log(token);
     if (typeof token === "string") {
         localStorage.setItem("facebook-token", token);
         // updateToken(token);
