@@ -1,6 +1,10 @@
 <h1 align="center">
-  Instagram analyzing tool️ <img src="./senior-project-icon.jpg" width="100" height="100">
+  Instagram analyzing tool️
 </h1>
+<p align="center">
+  <img src="./senior-project-icon.jpg" width="200" height="200">
+</p>
+
 
 ## Motivation
 <p>
