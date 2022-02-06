@@ -1,0 +1,1 @@
+export { LeftMenuForPost } from "./ui";

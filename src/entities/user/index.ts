@@ -1,1 +1,1 @@
-export { userModel } from "./model";
+export * as userModel from "./model";

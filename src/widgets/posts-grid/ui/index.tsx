@@ -1,28 +1,28 @@
-import React from 'react';
-import {mediaModel} from "../../../entities/media";
-import {Grid, GridItem, Image, AspectRatio, Flex, Text, Box} from "@chakra-ui/react"
+import React, {FC} from 'react';
+import {Grid, GridItem, Image, Flex, Text, Box} from "@chakra-ui/react"
 import {
     Menu,
     MenuButton,
     MenuList,
     MenuItem,
-    MenuItemOption,
-    MenuGroup,
-    MenuOptionGroup,
-    MenuIcon,
-    MenuCommand,
-    MenuDivider,
 } from "@chakra-ui/react"
 
 import { HamburgerIcon } from '@chakra-ui/icons'
+import {mediaModel, mediaTyping} from "entities/media";
 import {useHistory} from "react-router-dom";
+import {reflect} from "@effector/reflect";
 
 //id,like_count,caption,media_url,media_type,timestamp,thumbnail_url,permalink"
-export const PostsGrid = () => {
-    const posts = mediaModel.selectors.usePosts();
+interface IProps {
+  posts: mediaTyping.Post[],
+  setSelectedPostId: (id: number) => void,
+}
 
+export const View: FC<IProps> = ({
+  posts,
+  setSelectedPostId,
+}) => {
     const history = useHistory();
-
     return (
         <Grid
             h="auto"
@@ -57,7 +57,7 @@ export const PostsGrid = () => {
                                 >
                                     <MenuItem
                                         onClick={() => {
-                                            mediaModel.events.setPostId(post.id);
+                                            setSelectedPostId(post.id);
                                             history.push(`media/${post.id}`)
                                         }}
                                     >
@@ -77,12 +77,6 @@ export const PostsGrid = () => {
                                 post.media_type === "VIDEO" && <Image maxWidth={"100%"} src={post.thumbnail_url}/>
                             }
                         </Box>
-                        {/*{*/}
-                        {/*    post.media_type === "IMAGE" && <Image maxWidth={"190px"} src={post.media_url}/>*/}
-                        {/*}*/}
-                        {/*{*/}
-                        {/*    post.media_type === "VIDEO" && <Image maxWidth={"190px"} src={post.thumbnail_url}/>*/}
-                        {/*}*/}
                         <Box
                             height={"auto"}
                             padding={"5px"}
@@ -95,5 +89,12 @@ export const PostsGrid = () => {
             }
         </Grid>
     )
-
 }
+
+export const PostsGrid = reflect({
+  view: View,
+  bind: {
+    posts: mediaModel.$posts,
+    setSelectedPostId: mediaModel.selectedPostIdChanged,
+  },
+})

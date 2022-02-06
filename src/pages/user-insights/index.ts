@@ -1,1 +1,0 @@
-export {UserInsights} from './ui'

@@ -1,20 +1,20 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Box, Flex, Image, Text} from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react"
 import { AiOutlineFund, AiOutlineHome, AiOutlineRead, AiOutlineControl } from "react-icons/ai"
-import {useStore} from "effector-react";
-import {CommentsServicesState} from "../../../entities/service/types";
-import {serviceModel} from "../../../entities/service";
 
+import {postMenuServicesModel, postMenuServicesTyping, postMenuServicesConfig} from "entities/post-menu-services";
+import {reflect} from "@effector/reflect";
 
-export const LeftMenuForPost = () => {
+interface IProps {
+  postMenuService: postMenuServicesTyping.CommentsServicesState,
+  changePostMenuService: (data: postMenuServicesTyping.CommentsServicesState) => void,
+}
 
-    const commentsServiceState = useStore(serviceModel.stores.$commentsServiceState);
-
-
-    const changeCommentsServiceState = (newState: CommentsServicesState) => {
-        serviceModel.events.updateCommentsServiceState(newState);
-    }
+const View: FC<IProps> = ({
+  postMenuService,
+  changePostMenuService,
+}) => {
 
     return (
         <Flex
@@ -34,21 +34,19 @@ export const LeftMenuForPost = () => {
                 flexDirection={"row"}
                 alignItems={"center"}
                 paddingLeft={"10px"}
-                backgroundColor={commentsServiceState === "OVERVIEW" ? "#2F2F2F" : "#FFFFFF"}
-                color={commentsServiceState === "OVERVIEW" ? "#FFFFFF" : "#2F2F2F"}
+                backgroundColor={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.OVERVIEW ? "#2F2F2F" : "#FFFFFF"}
+                color={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.OVERVIEW ? "#FFFFFF" : "#2F2F2F"}
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 as={"button"}
                 onClick={() => {
-                    changeCommentsServiceState("OVERVIEW")
+                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.OVERVIEW)
                 }}
             >
                 <Icon
-                    // color={commentsServiceState === "OVERVIEW" ? "#FFFFFF" : "#2F2F2F"}
                     as={AiOutlineHome}
                 />
                 <Text
                     marginLeft={"7px"}
-                    // color={commentsServiceState === "OVERVIEW" ? "#FFFFFF" : "#2F2F2F"}
                 >
                     Overview
                 </Text>
@@ -60,21 +58,19 @@ export const LeftMenuForPost = () => {
                 flexDirection={"row"}
                 alignItems={"center"}
                 paddingLeft={"10px"}
-                backgroundColor={commentsServiceState === "GRAPHS" ? "#2F2F2F" : "#FFFFFF"}
-                color={commentsServiceState === "GRAPHS" ? "#FFFFFF" : "#2F2F2F"}
+                backgroundColor={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.GRAPHS ? "#2F2F2F" : "#FFFFFF"}
+                color={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.GRAPHS ? "#FFFFFF" : "#2F2F2F"}
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 marginTop={"6px"}
                 as={"button"}
                 onClick={() => {
-                    changeCommentsServiceState("GRAPHS")
+                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.GRAPHS)
                 }}
             >
                 <Icon
-                    // color={commentsServiceState === "GRAPHS" ? "#FFFFFF" : "#2F2F2F"}
                     as={AiOutlineFund}
                 />
                 <Text
-                    // color={commentsServiceState === "GRAPHS" ? "#FFFFFF" : "#2F2F2F"}
                     marginLeft={"7px"}
                 >
                     Graphs
@@ -87,12 +83,12 @@ export const LeftMenuForPost = () => {
                 flexDirection={"row"}
                 alignItems={"center"}
                 paddingLeft={"10px"}
-                backgroundColor={commentsServiceState === "MANAGEMENT" ? "#2F2F2F" : "#FFFFFF"}
+                backgroundColor={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT ? "#2F2F2F" : "#FFFFFF"}
                 marginTop={"6px"}
-                color={commentsServiceState === "MANAGEMENT" ? "#FFFFFF" : "#2F2F2F"}
+                color={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT ? "#FFFFFF" : "#2F2F2F"}
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 onClick={() => {
-                    changeCommentsServiceState("MANAGEMENT")
+                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT)
                 }}
             >
                 <Icon
@@ -112,20 +108,18 @@ export const LeftMenuForPost = () => {
                 flexDirection={"row"}
                 alignItems={"center"}
                 paddingLeft={"10px"}
-                backgroundColor={commentsServiceState === "TUTORIALS" ? "#2F2F2F" : "#FFFFFF"}
-                color={commentsServiceState === "TUTORIALS" ? "#FFFFFF" : "#2F2F2F"}
+                backgroundColor={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.TUTORIALS ? "#2F2F2F" : "#FFFFFF"}
+                color={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.TUTORIALS ? "#FFFFFF" : "#2F2F2F"}
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 marginTop={"6px"}
                 onClick={() => {
-                    changeCommentsServiceState("TUTORIALS")
+                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.TUTORIALS)
                 }}
             >
                 <Icon
-                    // color={commentsServiceState === "TUTORIALS" ? "#FFFFFF" : "#2F2F2F"}
                     as={AiOutlineRead}
                 />
                 <Text
-                    // color={commentsServiceState === "TUTORIALS" ? "#FFFFFF" : "#2F2F2F"}
                     marginLeft={"7px"}
                 >
                     Tutorials
@@ -134,3 +128,11 @@ export const LeftMenuForPost = () => {
         </Flex>
     )
 }
+
+export const LeftMenuForPost = reflect({
+  view: View,
+  bind: {
+    postMenuService: postMenuServicesModel.$postMenuService,
+    changePostMenuService: postMenuServicesModel.postMenuServiceChanged,
+  },
+})

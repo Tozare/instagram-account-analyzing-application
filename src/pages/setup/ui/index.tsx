@@ -1,7 +1,5 @@
 import React from 'react';
-import {LeftMenuForPost} from "../../../widgets/left-menu-for-post/ui";
-import {Comments} from "../../../widgets/comments/ui";
-import {AnalyzationThresholdSetup} from "../../../features/comments-analyzer/ui/analyzation-threshold-setup";
+import {AnalyzationThresholdSetup} from "features/comments-analyzer";
 import {Box, Text} from "@chakra-ui/react";
 import {InfoIcon} from "@chakra-ui/icons";
 

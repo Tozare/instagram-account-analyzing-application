@@ -2,7 +2,7 @@ import React from 'react';
 import {Box, Flex, Image} from "@chakra-ui/react";
 import {CommentsManagement} from "../../../features/comments-management/ui";
 import {useStore} from "effector-react";
-import {serviceModel} from "entities/service";
+import {serviceModel} from "entities/post-menu-services";
 import {PostInsights} from "features/post-insights";
 
 export const Comments = () => {

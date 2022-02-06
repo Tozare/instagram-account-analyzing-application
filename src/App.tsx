@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useStore, useEvent} from "effector-react";
 import {Box, ChakraProvider} from "@chakra-ui/react"
 import {
   BrowserRouter as Router,
@@ -6,40 +7,40 @@ import {
   Route,
   Link, Redirect
 } from "react-router-dom";
-import {Home} from "./pages/home/home";
-import {Header} from "./widgets/header/ui";
-import {Posts} from "./pages/posts/ui";
-import {Post} from "./pages/post/ui";
-import {authModel} from "./entities/auth";
-import {CommingSoon} from "./pages/comming-soon/ui";
-import {UserInsights} from "./pages/user-insights";
-import {useStore} from "effector-react";
-import {userModel} from "./entities/user";
-import {mediaModelUpdated, mediaModel} from "./entities/media";
-import {commentsStateChanged} from "./entities/media/model";
-import {Setup} from "./pages/setup/ui";
-import {Comments} from "./pages/comments/ui";
-// import '../'
-// import "react-vis/dist/style.css";
+
+import { Home } from "pages/home";
+import { Header } from "widgets/header";
+import { Posts } from "pages/posts";
+import { PostAnalysis } from "pages/post-analysis";
+import { CommingSoon } from "pages/comming-soon/ui";
+import { userModel } from "entities/user";
+import { mediaModel } from "entities/media";
+import { authModel } from "entities/auth";
+import { Setup } from "pages/setup";
+import { Comments } from "./pages/comments/ui";
 import { Spinner, Text } from '@chakra-ui/react'
+import {instagramPagePostsRequested} from "entities/media/model";
 
 export default function App() {
 
-  const accessToken = useStore(authModel.stores.$authToken);
-  const commentsState = useStore(mediaModelUpdated.$commentsState)
+  const accessToken = useStore(authModel.$authToken);
+  const commentsState = useStore(mediaModel.$commentsState);
+  const changeToken = useEvent(authModel.tokenUpdated);
+  const updateInstagramPagePostsInformation = useEvent(mediaModel.instagramPagePostsRequested);
+  // const changeComments
+
 
   useEffect(() => {
     window.FB.getLoginStatus((response) => {
-      authModel.events.updateToken(response.authResponse?.accessToken);
-
+      changeToken(response.authResponse?.accessToken);
     });
   }, []);
 
   useEffect(() => {
     if (accessToken){
-      mediaModelUpdated.commentsStateChanged("LOADING");
+      // mediaModelUpdated.commentsStateChanged("LOADING");
       userModel.effects.getUserPageIdFX();
-      mediaModel.effects.getAllMediaPostsFx();
+      updateInstagramPagePostsInformation();
     }
   }, [accessToken])
 
@@ -88,7 +89,7 @@ export default function App() {
                   <Posts/>
                 </Route>
                 <Route path="/media/:mediaId" exact={true}>
-                  <Post/>
+                  <PostAnalysis/>
                 </Route>
                 <Route path="/home">
                   <Home/>
@@ -99,9 +100,9 @@ export default function App() {
                 <Route path={"/messages"}>
                   <CommingSoon/>
                 </Route>
-                <Route path={"/insights"}>
-                  <UserInsights/>
-                </Route>
+                {/*<Route path={"/insights"}>*/}
+                {/*  <UserInsights/>*/}
+                {/*</Route>*/}
                 <Route path={"/setup"}>
                   <Setup/>
                 </Route>

@@ -1,5 +1,0 @@
-import {createEffect} from "effector";
-
-
-
-

@@ -1,63 +1,115 @@
-// import * as domains from "./domains";
-// import * as effects from "./effects";
-import * as stores from "./stores";
-import * as events from "./events";
-import * as selectors from "./selectors";
-import * as effects from "./effects";
-import {graphApi} from "../../../shared/api/graph-api";
-import {postPosts} from "../../../shared/api/backend/postPosts";
-import {postComments} from "../../../shared/api/backend/postComments";
-import {backendAPI} from "../../../shared/api/backend";
-import {combine, createEvent, createStore, sample} from "effector";
-import {$posts, $selectedPostId} from "./stores";
+import {combine, createEffect, createEvent, createStore, restore, sample} from "effector";
+import {graphApi} from "shared/api/graph-api";
+import {backendAPI} from "shared/api/backend";
+import {
+  Comment,
+  Post,
+  PostEngagement,
+  PostImpressions,
+  PostMetrics,
+  PostReach,
+  PostSaved,
+  ProcessedComment
+} from "../typing";
+import {forward} from "effector/effector.mjs";
+
+export const postsChanged = createEvent<Post[]>();
+export const $posts = restore(postsChanged, []);
+
+export const postCommentsChanged = createEvent<Comment[]>();
+export const $postComments = restore(postCommentsChanged, []);
+
+export const selectedPostIdChanged = createEvent<string>()
+export const $selectedPostId = restore(selectedPostIdChanged,"");
+
+export const selectedPostCommentIdsMapChanged = createEvent<{[key: string | number]: boolean}>();
+export const $selectedPostCommentsIdsMap = restore(selectedPostCommentIdsMapChanged,{});
+
+export const postMetricsChanged = createEvent<PostMetrics[]>()
+export const $postMetrics = restore(postMetricsChanged,[]);
+
+export const postEngagementChanged = createEvent<PostEngagement>();
+export const $postEngagement = restore(postEngagementChanged,{});
+
+export const postImpressionsChanged = createEvent<PostImpressions>();
+export const $postImpressions = restore(postImpressionsChanged,{});
+
+export const postReachChanged = createEvent<PostReach>();
+export const $postReach = restore(postReachChanged,{});
+
+export const postSavedChanged = createEvent<PostSaved>();
+export const $postSaved = restore(postSavedChanged,{});
+
+export const postCommentsMapChanged = createEvent<{[key: string]: Comment[]}>();
+export const $postCommentsMap = restore(postCommentsMapChanged,{});
+
+export const selectedPostCommentIdInMapChanged = createEvent<string|number>();
+export const deleteSelectedPostComments = createEvent<(number|string)[]>();
+
+export const instagramPagePostsRequested = createEvent();
+export const getAllMediaPostsFx = createEffect(async (): Promise<Post[]> => {
+  const facebookPages = await graphApi.getFacebookPages();
+  const instagramPageAccountId = await graphApi.getInstagramAccountId(facebookPages[0].id);
+  const media = await graphApi.getAllMediaFromInstagramPage(instagramPageAccountId)
+  return media;
+})
+
+forward({
+  from: instagramPagePostsRequested,
+  to: getAllMediaPostsFx,
+})
+
+export const getPostCommentsFx = createEffect(async (params: {postId: string}) => {
+  const mediaComments = await graphApi.getMediaComments(params.postId);
+  return mediaComments
+})
+
+export const deleteSelectedPostCommentsFx = createEffect(async (params: {selectedPostComments: {[key: string|number]: boolean}}) => {
+  const commentsIds = Object.keys(params.selectedPostComments)
+  for(let i=0;i<commentsIds.length;i++){
+    const postCommentId = commentsIds[i];
+    if (params.selectedPostComments[postCommentId]){
+      await graphApi.deleteComment(postCommentId);
+    }
+  }
+  return params.selectedPostComments;
+})
 
 
-stores
-    .$posts
-    .on(events.updatePosts, (state: any[], data: any[]) => {return data})
-    .on(effects.getAllMediaPostsFx.doneData, (state, data) => {return data})
-    // .on(events.deleteSelectedPosts, (state, data) => {
-    //     const leavedPosts = state.filter(post => {
-    //         if (post.id)
-    //     })
-    // })
+export const getPostInsightsFx = createEffect(async (params: {mediaId: number|string}): any => {
+  const postInsights = await graphApi.getMediaInsights(params.mediaId);
+  const insights = {}
+  postInsights.forEach((insight) => {
+    insights[insight.name] = insight
+  });
 
-stores
-    .$selectedPostId
-    .on(events.setPostId, (state, data) => {return data})
-
-stores
-    .$postComments
-    .on(events.updatePostComments, (state,data) => {return data})
-    .on(effects.getPostCommentsFx.doneData, (state, data) => {return data})
-    // .on(events.deleteSelectedPostComments, (state, data) => {
-    //     console.log(data);
-    //     return state.filter((post) => {
-    //         return !data[post.id];
-    //     })
-    // })
-    .on(effects.deleteSelectedPostCommentsFx.doneData, (state, data) => {
-        // console.log(data)
-        return state.filter((post) => {
-            return !data[post.id];
-        })
-    })
+  return insights;
+})
 
 
-stores
-    .$selectedPostCommentsIdsMap
-    .on(events.setSelectedPostCommentsIdsMap, (state, data) => {return data})
-    .on(events.changeSelectedPostCommentIdInMap, (state, data) => {
+
+$posts
+  .on(getAllMediaPostsFx.doneData, (state, data) => {return data})
+
+
+$postComments
+  .on(getPostCommentsFx.doneData, (state, data) => {return data})
+  .on(deleteSelectedPostCommentsFx.doneData, (state, data) => {
+      // console.log(data)
+      return state.filter((post) => {
+          return !data[post.id];
+      })
+  })
+
+
+$selectedPostCommentsIdsMap
+    .on(selectedPostCommentIdInMapChanged, (state, data) => {
         if (state[data]){
             return {
                 ...state,
                 [data]: true
             };
         } else {
-            console.log({
-                ...state,
-                [data]: true
-            })
             return {
                 ...state,
                 [data]: true
@@ -66,20 +118,37 @@ stores
     });
 
 
-stores
-    .$postMetrics
-    .on(events.updatePostMetrics, (state, data) => {return data})
-    .on(effects.getPostInsightsFX.doneData, (state,data) => {
-        // console.log(data);
-        return data
-    })
-
-stores
-    .$commentsPostMap
-    .on(events.updatePostCommentsMap, (state, data) => {return data})
+$postMetrics
+  .on(getPostInsightsFx.doneData, (state,data) => {
+      return data
+  })
 
 
-effects.getAllMediaPostsFx.doneData.watch(async (posts) => {
+// useEffect(() => {
+//     console.log(mediaId);
+//     if (selectedPostId){
+//         // mediaModel.effects.getPostCommentsFx({postId: selectedPostId});
+//         // graphApi.getMediaInsights(mediaId);
+//         mediaModel.effects.getPostInsightsFX({mediaId: selectedPostId});
+//     } else if(mediaId) {
+//         // mediaModel.effects.getPostCommentsFx({postId: mediaId});
+//         mediaModel.effects.getPostInsightsFX({mediaId: mediaId});
+//     }
+//
+// }, [selectedPostId])
+
+sample({
+  clock: $selectedPostId,
+  fn: (selectedPostId) => {
+    return { mediaId: selectedPostId };
+  },
+  target: [
+    getPostInsightsFx,
+  ],
+})
+
+//TODO: FIX
+getAllMediaPostsFx.doneData.watch(async (posts) => {
     const postsData = posts.map((post) => {
         return {
             id: post.id,
@@ -90,8 +159,7 @@ effects.getAllMediaPostsFx.doneData.watch(async (posts) => {
             comment_count: post.comment_count ? post.comment_count : 0
         }
     });
-    // console.log(posts);
-    // console.log(postsData);
+
     await backendAPI.postPosts(postsData);
 
     const comments = [];
@@ -116,37 +184,16 @@ effects.getAllMediaPostsFx.doneData.watch(async (posts) => {
     }
 })
 
-export const $processedComments = createStore<any[]>([]);
-export const processedCommentsChanged = createEvent<any[]>();
+
+export const $processedComments = createStore<ProcessedComment[]>([]);
+export const processedCommentsChanged = createEvent<ProcessedComment[]>();
 $processedComments.on(processedCommentsChanged, (_,data) => data);
 
-export const $selectedPostProcessedComments = createStore<any>([]);
 
+export const $selectedPostProcessedComments = createStore<ProcessedComment[]>([]);
 
-export const $insultThreshold = createStore<number>(0.5);
-export const insultThresholdChanged = createEvent<number>();
-$insultThreshold.on(insultThresholdChanged, (_,data) => data);
+// TODO: transfer to feature layer
 
-export const $identityHateThreshold = createStore<number>(0.5);
-export const identityHateThresholdChanged = createEvent<number>();
-$identityHateThreshold.on(identityHateThresholdChanged, (_,data) => data);
-
-
-export const $obsceneThreshold = createStore<number>(0.5);
-export const obsceneThresholdChanged = createEvent<number>();
-$obsceneThreshold.on(obsceneThresholdChanged, (_,data) => data);
-
-export const $severeToxicThreshold = createStore<number>(0.5);
-export const severeToxicThresholdChanged = createEvent<number>();
-$severeToxicThreshold.on(severeToxicThresholdChanged, (_,data) => data);
-
-export const $threatThreshold = createStore<number>(0.5);
-export const threatThresholdChanged = createEvent<number>();
-$threatThreshold.on(threatThresholdChanged, (_,data) => data);
-
-export const $toxicThreshold = createStore<number>(0.5);
-export const toxicThresholdChanged = createEvent<number>();
-$toxicThreshold.on(toxicThresholdChanged, (_,data) => data);
 
 
 export type Thresholds = {
@@ -158,80 +205,13 @@ export type Thresholds = {
     toxicThreshold: number,
 }
 
-export const $thresholds = combine({
-        $insultThreshold,
-        $identityHateThreshold,
-        $obsceneThreshold,
-        $severeToxicThreshold,
-        $threatThreshold,
-        $toxicThreshold
-    },
-    (stores) => ({
-        insultThreshold: stores.$insultThreshold,
-        identityHateThreshold: stores.$identityHateThreshold,
-        obsceneThreshold: stores.$obsceneThreshold,
-        severeToxicThreshold: stores.$severeToxicThreshold,
-        threatThreshold: stores.$threatThreshold,
-        toxicThreshold: stores.$toxicThreshold,
-    })
-);
+
 
 
 export const $processedCommentsWithStatus = createStore<any[]>([]);
 export const processedCommentsWithStatusChanged = createEvent<any[]>();
 $processedCommentsWithStatus.on(processedCommentsWithStatusChanged, (_,data) => data);
 
-sample({
-    source: [$thresholds, $processedComments],
-    fn: ([threshold, processedComments]) => {
-        const {
-            insultThreshold,
-            identityHateThreshold,
-            obsceneThreshold,
-            severeToxicThreshold,
-            threatThreshold,
-            toxicThreshold
-        } = threshold
-
-        const processedCommentsWithStatus = processedComments.map((processedComment) => {
-            let commentStatus = "POSITIVE";
-            if (
-                parseFloat(processedComment.insult) >= insultThreshold
-                || parseFloat(processedComment.identity_hate) >= identityHateThreshold
-                || parseFloat(processedComment.obscene) >= obsceneThreshold
-                || parseFloat(processedComment.severe_toxic) >= severeToxicThreshold
-                || parseFloat(processedComment.threat) >= threatThreshold
-                || parseFloat(processedComment.toxic) >= toxicThreshold
-            ){
-                commentStatus = "NEGATIVE"
-            }
-            const proccessedReplyWithStatus = processedComment.replies.map((processedReply) => {
-                let replyStatus = "POSITIVE";
-                if (
-                    parseFloat(processedReply.insult) >= insultThreshold
-                    || parseFloat(processedReply.identity_hate) >= identityHateThreshold
-                    || parseFloat(processedReply.obscene) >= obsceneThreshold
-                    || parseFloat(processedReply.severe_toxic) >= severeToxicThreshold
-                    || parseFloat(processedReply.threat) >= threatThreshold
-                    || parseFloat(processedReply.toxic) >= toxicThreshold
-                ){
-                    replyStatus = "NEGATIVE"
-                }
-                return {
-                    ...processedReply,
-                    status: replyStatus
-                }
-            })
-            return {
-                ...processedComment,
-                replies: proccessedReplyWithStatus,
-                status: commentStatus
-            }
-        })
-        return processedCommentsWithStatus;
-    },
-    target: processedCommentsWithStatusChanged
-})
 
 
 
@@ -248,31 +228,19 @@ sample({
 
 
 sample({
-    clock: events.setPostId,
+    clock: $selectedPostId,
     source: $processedComments,
     fn: (processedComments, selectedPostId) => {
-        // console.log("-------------------------");
-        // console.log(selectedPostId);
-        // console.log(processedComments);
-        // console.log()
         return processedComments.filter(processedComment => {
             // console.log(processedComment);
             return processedComment.post_id === selectedPostId
         })
     },
-    target: $selectedPostProcessedComments
+    target: [
+      $selectedPostProcessedComments
+    ],
 })
 
 export const $commentsState = createStore<string>("NONE");
 export const commentsStateChanged = createEvent<string>();
 $commentsState.on(commentsStateChanged, (_, data) => data);
-
-
-
-
-export const mediaModel = {
-    stores,
-    selectors,
-    events,
-    effects
-};

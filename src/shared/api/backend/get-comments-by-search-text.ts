@@ -5,8 +5,6 @@ const url = 'http://jibek100.pythonanywhere.com/searchcomment/';
 
 export const getCommentsBySearchText = async (searchComment: string) => {
 
-
-
     const res= await axios({
         method: 'POST',
         url: url,

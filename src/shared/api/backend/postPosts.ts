@@ -25,20 +25,20 @@ export const postPosts = (posts: any[]) => {
         ;
     })
     // console.log(posts);
-    // // const postData = posts.map((post) => {
+    // // const postData = posts.map((post-analysis) => {
     // //     return {
-    // //         post_id: post.id,
-    // //         text: post.text,
-    // //         date_posted: post.timestamp,
-    // //         profile: post.owner,
-    // //         like_count: post.like_count,
-    // //         comment_count: post.comment_count
+    // //         post_id: post-analysis.id,
+    // //         text: post-analysis.text,
+    // //         date_posted: post-analysis.timestamp,
+    // //         profile: post-analysis.owner,
+    // //         like_count: post-analysis.like_count,
+    // //         comment_count: post-analysis.comment_count
     // //     }
     // // })
     //
-    // // axios.post(url, postData)
+    // // axios.post-analysis(url, postData)
     // axios({
-    //     method: 'post',
+    //     method: 'post-analysis',
     //     url: url,
     //     headers: {
     //         'Content-Type': 'application/json'

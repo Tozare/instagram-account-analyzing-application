@@ -40,7 +40,7 @@ import {useParams} from "react-router-dom";
 export const CommentsManagement = () => {
     const selectedPostId = mediaModel.selectors.useSelectedPostId();
     const postComments = useStore(mediaModelUpdated.$processedCommentsWithStatus);
-    console.warn("check for post comments")
+    console.warn("check for post-analysis comments")
     console.log(postComments);
     // console.log(selectedPostId);
     const thresholds = useStore(mediaModelUpdated.$thresholds);
@@ -215,7 +215,7 @@ export const CommentsManagement = () => {
                             }).then(() => {
                                 toast({
                                     title: "Comments were deleted",
-                                    description: "Selected comments of the post were successfully deleted",
+                                    description: "Selected comments of the post-analysis were successfully deleted",
                                     status: "success",
                                     duration: 4500,
                                     isClosable: true,

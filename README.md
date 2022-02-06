@@ -1,44 +1,26 @@
-<p align="center">Webpack + TypeScript + React = ❤️</p>
+<h1 align="center">
+  Instagram analyzing tool️
+</h1>
 <p align="center">
-  <img src="https://img.shields.io/github/license/saltyshiomix/webpack-typescript-react-starter.svg" alt="Package License (MIT)">
+  <img src="./senior-project-icon.jpg">
 </p>
 
-As of Babel v7, now we can handle `.ts` or `.tsx` files same as `.js` or `.jsx` files like this:
 
-```js
-// webpack.config.js
+## Motivation
+<p>
+  Due to the enormous amount of negativity in Instagram, we decided to provide an app that will diminish the hateful comments from other users and take measures to prevent it. In other words, we want to make Instagram a more safe platform for everyone. This will be done by analyzing comments, direct messages to find negative, positive, neutral comments and give opportunity to delete negative comments and block users that wrote that.
+</p>
 
-module.exports = {
-  resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-  },
-  module: {
-    rules: [
-      {
-        test: [/\.jsx?$/, /\.tsx?$/],
-        use: 'babel-loader',
-        exclude: /node_modules/,
-      },
-    ],
-  },
-}
-```
+## Stack
 
-**Use `babel-loader` to `/\.tsx?$/` ?!**
+* React js
+* Typescript
+* Sliced-design methodology
+* Chakra UI
+* Effector state manager
+* Jest - for testing
+* Graph API, Message API - to retrieve data from Instagram page
 
-Yes, `babel-loader`. See `.babelrc`:
-
-```json
-{
-  "presets": [
-    "@babel/env",
-    "@babel/react",
-    "@babel/typescript"
-  ]
-}
-```
-
-Thanks to `@babel/preset-typescript`, we can handle `/\.tsx?$/` files same as `/\.jsx?$/` files :)
 
 ## Usage
 
@@ -47,12 +29,11 @@ Thanks to `@babel/preset-typescript`, we can handle `/\.tsx?$/` files same as `/
 $ yarn
 
 # development mode
-# it automatically opens `http://localhost:8080` in your default browser,
-# and you'll see "Webpack + TypeScript + React = ❤️"
+# it automatically opens `http://localhost:8080` in your default browser
 $ yarn dev
 
-# check types
-$ yarn check-types
+# check typing
+$ yarn check-typing
 
 # production build
 $ yarn build

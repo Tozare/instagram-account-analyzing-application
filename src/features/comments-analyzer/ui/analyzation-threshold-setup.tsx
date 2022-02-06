@@ -1,8 +1,8 @@
 import React, {FC} from "react";
 import {Box, Button, Flex, Input, Text} from "@chakra-ui/react";
 import {reflect} from "@effector/reflect";
-import { commentsModel } from "../../../entities/comments";
-import { mediaModelUpdated } from "../../../entities/media";
+import { commentsModel } from "entities/comments";
+import * as model from "../model";
 
 interface IViewProps {
     thresholds: commentsModel.Thresholds,
@@ -158,13 +158,13 @@ const View: FC<IViewProps> = ({
 export const AnalyzationThresholdSetup = reflect({
     view: View,
     bind: {
-        thresholds: mediaModelUpdated.$thresholds,
-        onChangeInsultThreshold: mediaModelUpdated.insultThresholdChanged.prepend<string>((data) => parseFloat(data)),
-        onChangeIdentityHateThreshold: mediaModelUpdated.identityHateThresholdChanged.prepend<string>((data) => parseFloat(data)),
-        onChangeObsceneThreshold: mediaModelUpdated.obsceneThresholdChanged.prepend<string>((data) => parseFloat(data)),
-        onChangeSevereToxicThreshold: mediaModelUpdated.severeToxicThresholdChanged.prepend<string>((data) => parseFloat(data)),
-        onChangeThreatThreshold: mediaModelUpdated.threatThresholdChanged.prepend<string>((data) => parseFloat(data)),
-        onChangeToxicThreshold: mediaModelUpdated.toxicThresholdChanged.prepend<string>((data) => parseFloat(data)),
+        thresholds: model.$thresholds,
+        onChangeInsultThreshold: model.insultThresholdChanged.prepend<string>((data) => parseFloat(data)),
+        onChangeIdentityHateThreshold: model.identityHateThresholdChanged.prepend<string>((data) => parseFloat(data)),
+        onChangeObsceneThreshold: model.obsceneThresholdChanged.prepend<string>((data) => parseFloat(data)),
+        onChangeSevereToxicThreshold: model.severeToxicThresholdChanged.prepend<string>((data) => parseFloat(data)),
+        onChangeThreatThreshold: model.threatThresholdChanged.prepend<string>((data) => parseFloat(data)),
+        onChangeToxicThreshold: model.toxicThresholdChanged.prepend<string>((data) => parseFloat(data)),
     },
 });
 

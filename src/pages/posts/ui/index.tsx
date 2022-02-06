@@ -1,12 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {PostsGrid} from "../../../widgets/posts-grid/ui";
+import React, {useEffect, useState, FC} from 'react';
+import {PostsGrid} from "widgets/posts-grid";
 import {Flex} from "@chakra-ui/react";
-import {mediaModel} from "../../../entities/media/model";
+import {mediaModel} from "entities/media";
+import {reflect} from "@effector/reflect";
 
-export const Posts = () => {
+interface IProps {
+  requestInstagramPagePosts: () => void,
+}
+
+
+export const View: FC<IProps> = ({
+  requestInstagramPagePosts,
+}) => {
 
     useEffect(() => {
-        mediaModel.effects.getAllMediaPostsFx();
+      requestInstagramPagePosts();
     }, [])
 
     return (
@@ -31,3 +39,11 @@ export const Posts = () => {
         </div>
     )
 }
+
+export const Posts = reflect({
+  view: View,
+  bind: {
+    requestInstagramPagePosts: mediaModel.instagramPagePostsRequested,
+  }
+})
+

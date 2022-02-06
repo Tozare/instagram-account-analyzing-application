@@ -1,6 +1,6 @@
 import {createEvent, createStore, sample} from "effector";
 import {createEffect} from "effector/effector.mjs";
-import {backendAPI} from "../../../shared/api/backend";
+import {backendAPI} from "shared/api/backend";
 
 
 export const $comments = createStore<any[]>([]);

@@ -1,24 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {FC} from 'react';
 import {Box, Button, Flex, Image, Text, Divider} from "@chakra-ui/react";
-import {GetFacebookToken} from "../../../shared/libs/auth/get-facebook-token";
-import {loginFromFacebook} from "../../../shared/api/auth/login-from-facebook";
-import {logoutFromFacebook} from "../../../shared/api/auth/logout-from-facebook";
+import {reflect} from "@effector/reflect";
 import {useHistory, useLocation} from "react-router-dom";
-import {authModel} from "../../../entities/auth";
+import { authModel } from "entities/auth";
 
+interface IProps {
+  login: () => void,
+  logout: () => void,
+  facebookAuthToken: string,
+}
 
-
-export const Header = () => {
+export const View: FC<IProps> = ({
+  logout,
+  login,
+  facebookAuthToken,
+}) => {
 
     const history = useHistory();
     const location = useLocation();
-    const token = authModel.selectors.useToken();
-    // console.log(token);
-
-    useEffect(() => {
-        console.log(token);
-        console.log(typeof token);
-    }, [token])
 
 
     return (
@@ -125,7 +124,7 @@ export const Header = () => {
                 </Box>
                 <Box marginLeft={"auto"} marginRight={"20px"}>
                     {
-                        token === "" ?
+                        !facebookAuthToken ?
                             <Button
                                 width={"auto"}
                                 h="35px"
@@ -136,12 +135,7 @@ export const Header = () => {
                                 border={"1px solid #4267B2"}
                                 _hover={{ background: "#4267B2" }}
                                 _active={{ background: "#4267B2" }}
-                                onClick={() => {
-                                    authModel.effects.loginInFacebookFx().then(() => {
-                                        console.log("media");
-                                        history.push("media");
-                                    });
-                                }}
+                                onClick={login}
                             >
                                 Log in
                             </Button>
@@ -156,19 +150,23 @@ export const Header = () => {
                                 border={"1px solid #4267B2"}
                                 _hover={{ background: "#4267B2" }}
                                 _active={{ background: "#4267B2" }}
-                                onClick={() => {
-                                    authModel.effects.logoutFromFacebookFx().then(() => {
-                                        history.push("dashboard");
-                                    });
-                                }}
+                                onClick={logout}
                             >
                                 Log out
                             </Button>
                     }
                 </Box>
             </Flex>
-            {/*<Divider height={"1px"} backgroundColor={"#B2BEC3"}/>*/}
         </div>
-
     )
 }
+
+
+export const Header = reflect({
+  view: View,
+  bind: {
+    login: authModel.loginInFacebookAccountStarted,
+    logout: authModel.logoutFromFacebookAccountStarted,
+    facebookAuthToken: authModel.$authToken,
+  },
+})

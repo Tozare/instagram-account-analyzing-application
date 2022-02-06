@@ -1,3 +1,2 @@
-export { mediaModel } from "./model";
-export {COMMENT} from './types';
-export * as mediaModelUpdated from './model';
+export * as mediaModel from "./model";
+export * as mediaTyping from './typing';

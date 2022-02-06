@@ -1,37 +1,60 @@
-// import * as domains from "./domains";
-// import * as effects from "./effects";
-import * as stores from "./stores";
-import * as events from "./events";
-import * as effects from "./effects";
-import * as selectors from "./selectors";
-import {$user} from "./stores";
-import {updateUser} from "./events";
-import {backendAPI} from "../../../shared/api/backend";
-// import {postUser} from "../../../shared/api/backend";
-
-stores
-    .$userMetrics
-    .on(events.updateUserMetrics, (state ,data) => {return data})
+import {backendAPI} from "shared/api/backend";
+import {createEffect, createEvent, createStore, guard, sample} from "effector";
+import {graphApi} from "shared/api/graph-api";
 
 
-stores
-    .$userPageId
-    .on(events.updateUserPageId, (state ,data) => {return data})
-    .on(effects.getUserPageIdFX, (state, data) => {return data});
+export const userMetricsChanged = createEvent<any[]>();
+export const $userMetrics = createStore<any[]>([]);
 
-stores
-    .$user
-    .on(events.updateUser, (state,data) => {return data})
+export const userPageIdChanged = createEvent<string>();
+export const $userPageId = createStore<string|number>("");
+
+export const userUpdated = createEvent<any>();
+export const $user = createStore<any>(null);
 
 
-updateUser.watch((data) => {
-    // console.log(data);
-    backendAPI.postUser(data);
+export const getUserPageIdFX = createEffect(async () => {
+  const facebookPages = await graphApi.getFacebookPages();
+  // const user = await graphApi.getUserInfo(instagramPageAccountId);
+  // const userMetrics = await graphApi.getUserInsights(instagramPageAccountId);
+  // events.updateUser(user);
+  // events.updateUserMetrics(userMetrics);
+  return await graphApi.getInstagramAccountId(facebookPages[0].id);
+});
+
+export const getUserInformationFx = createEffect(async(pageId: string):any => {
+  return await graphApi.getUserInfo(pageId);
 })
 
-export const userModel = {
-    stores,
-    selectors,
-    events,
-    effects
-};
+export const postUserInformation = createEffect((user: any) => {
+  backendAPI.postUser(user);
+})
+
+$user
+  .on(getUserInformationFx.doneData, (_, data) => {return data});
+
+$userMetrics
+  .on(userMetricsChanged, (_ ,data) => {return data})
+
+$userPageId
+  .on(userPageIdChanged, (_ ,data) => {return data})
+  .on(getUserPageIdFX, (state, data) => {return data});
+
+$user
+  .on(userUpdated, (_,data) => {return data})
+
+sample({
+  clock: $userPageId,
+  target: [
+    getUserInformationFx,
+  ]
+})
+
+guard({
+  clock: $user,
+  filter: (_, user) => user !== null,
+  target: [
+    postUserInformation,
+  ],
+});
+

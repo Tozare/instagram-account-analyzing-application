@@ -1,1 +1,0 @@
-export { serviceModel } from "./model";

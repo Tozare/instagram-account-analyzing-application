@@ -13,7 +13,7 @@ export const postUser = (user: any) => {
         type: true
     }
     console.log(postData);
-    // axios.post(url, postData)
+    // axios.post-analysis(url, postData)
     axios({
         method: 'post',
         url: url,

@@ -15,7 +15,7 @@
     "@babel/polyfill": "^7.12.1",
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.2",
-    "@effector/reflect": "^7.0.1",
+    "@effector/reflect": "^7.1.1",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@types/react-datepicker": "^4.3.2",

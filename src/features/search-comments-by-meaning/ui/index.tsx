@@ -12,7 +12,7 @@ import {
     ModalHeader,
     ModalOverlay, Select, Spinner, toast, useToast
 } from "@chakra-ui/react";
-import {mediaModel, mediaModelUpdated} from "../../../entities/media";
+import {mediaModel} from "../../../entities/media";
 import {commentsManagementModel} from "../../comments-management/model";
 import {CloseIcon, Search2Icon, SearchIcon} from "@chakra-ui/icons";
 import {$isReplyModalOpen} from "../model";
@@ -31,7 +31,7 @@ interface IViewProps {
     onChangeReplyText: (data: string) => void,
     thresholds: mediaModelUpdated.Thresholds
 }
-
+//TODO:
 const View: FC<IViewProps> = ({
     state,
     onClick,
@@ -192,7 +192,7 @@ const View: FC<IViewProps> = ({
                             }).then(() => {
                                 toast({
                                     title: "Comments were deleted",
-                                    description: "Selected comments of the post were successfully deleted",
+                                    description: "Selected comments of the post-analysis were successfully deleted",
                                     status: "success",
                                     duration: 4500,
                                     isClosable: true,
