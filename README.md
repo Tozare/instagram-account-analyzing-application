@@ -5,6 +5,10 @@
   <img src="./senior-project-icon.jpg" width="200" height="200">
 </p>
 
+## Updates
+
+* App is still in development
+* Weekly updates of the code
 
 ## Motivation
 <p>
@@ -20,6 +24,17 @@
 * Effector state manager
 * Jest - for testing
 * Graph API, Message API - to retrieve data from Instagram page
+
+
+## Implemented features
+* Login in to Facebook page
+* Retrieving information from Instagram page (Post data, post comments, bio etc.)
+* Semantic search of all comments with Graph API
+* Analysis of post comments
+* Reply, delete comment functions
+
+## Feature features
+* Connection of Message API to retrieve Instagram page direct messages
 
 
 ## Usage

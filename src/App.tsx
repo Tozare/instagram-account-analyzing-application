@@ -17,7 +17,7 @@ import { userModel } from "entities/user";
 import { mediaModel } from "entities/media";
 import { authModel } from "entities/auth";
 import { Setup } from "pages/setup";
-import { Comments } from "./pages/comments/ui";
+import { Comments } from "pages/comments";
 import { Spinner, Text } from '@chakra-ui/react'
 import {instagramPagePostsRequested} from "entities/media/model";
 
