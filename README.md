@@ -33,7 +33,7 @@
 * Analysis of post comments
 * Reply, delete comment functions
 
-## Feature features
+## Future features
 * Connection of Message API to retrieve Instagram page direct messages
 
 
