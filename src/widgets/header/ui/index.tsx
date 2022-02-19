@@ -10,15 +10,16 @@ interface IProps {
   facebookAuthToken: string,
 }
 
-export const View: FC<IProps> = ({
+export const View = ({
   logout,
   login,
   facebookAuthToken,
-}) => {
+}: IProps) => {
 
     const history = useHistory();
     const location = useLocation();
 
+    console.log("Header view");
 
     return (
         <div style={{width: "100%", height: "65px"}}>

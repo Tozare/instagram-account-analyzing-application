@@ -1,3 +1,4 @@
+import { POST_MENU_SERVICES } from "../config";
 
-
-export type CommentsServicesState = "OVERVIEW" | "GRAPHS" | "MANAGEMENT" | "TUTORIALS";
+type keys = keyof typeof POST_MENU_SERVICES;
+export type CommentsServicesState = typeof POST_MENU_SERVICES[keys];

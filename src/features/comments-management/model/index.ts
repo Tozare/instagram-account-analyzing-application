@@ -1,69 +1,64 @@
-import * as stores from "./stores";
-import * as events from "./events";
-import * as selectors from "./selectors";
-import * as effects from "./effects";
 import {FilterData} from "../types";
-import {filter} from "../libs/filter";
-import {$replyText} from "./stores";
-import {setReplyText} from "./events";
-import {effect} from "@chakra-ui/react";
-
-stores
-    .$filteredComments
-    .on(events.setFilteredComments, (state: any[], data: any[]) => {return data})
-    .on(events.filter, (state: any[], data:FilterData) => {
-        const filteredPosts = filter(data);
-        console.log(filteredPosts);
-        return filteredPosts;
-    })
-
-stores
-    .$searchFilter
-    .on(events.setSearchFilter, (state, data) => {return data})
-
-stores
-    .$statusFilter
-    .on(events.setStatusFilter, (state,data) => {return data})
-
-stores
-    .$isReplyCommentModalOpen
-    .on(events.setIsReplyCommentModal, (state, data) => {return data})
-    .on(effects.replyCommentFx.doneData, (state, data) => {
-        return false;
-    })
-
-stores
-    .$replyText
-    .on(events.setReplyText, (state, data) => {return data})
-    .on(effects.replyCommentFx.doneData, (state, data) => {
-        return "";
-    })
-
-// stores
-//     .$selectedPostsIdsMap
-//     .on(events.changeSelectedPostIdInMap, (state, data) => {
-//         if (state[data]){
-//          return {
-//                 ...state,
-//                 data: true
-//             };
-//         } else {
-//             return {
-//                 ...state,
-//                 data: true
-//             };
-//         }
-//     })
-//     .on(events.setSelectedPostsIdsMap, (state, data) => {return data});
+import {createEffect, createEvent, createStore} from "effector";
+import {graphApi} from "shared/api/graph-api";
+import { filter } from "../libs";
 
 
+export const $filteredComments = createStore<any[]>([]);
+export const $searchFilter = createStore<string>("");
+export const $statusFilter = createStore<string>("ALL");
 
-export const commentsManagementModel = {
-    stores,
-    selectors,
-    events,
-    effects
-};
+export const $isReplyCommentModalOpen = createStore<boolean>(false);
+export const $replyText = createStore<string>("");
 
-//TODO: ADD statusFilterType
+
+export const filteredCommentsChanged = createEvent<any[]>();
+export const searchFilterChanged = createEvent<string>();
+export const statusFilterChanged = createEvent<string>();
+export const filtered = createEvent<FilterData>();
+export const selectedPostsIdsMapChanged = createEvent<{[key: string|number]: boolean}>();
+
+export const isReplyCommentModalChanged = createEvent<boolean>();
+export const replyTextChanged = createEvent<string>();
+
+export const replyCommentFx = createEffect(async (params: {
+  replyText: string,
+  selectedPostComments: {[key: string|number]: boolean}
+}) => {
+  const commentsIds = Object.keys(params.selectedPostComments)
+  for(let i=0;i<commentsIds.length;i++){
+    const postCommentId = commentsIds[i];
+    if (params.selectedPostComments[postCommentId]){
+      await graphApi.replyText(postCommentId, params.replyText);
+    }
+  }
+  return true;
+})
+
+
+$filteredComments
+  .on(filteredCommentsChanged, (state: any[], data: any[]) => {return data})
+  .on(filtered, (state: any[], data:FilterData) => {
+      const filteredPosts = filter(data);
+      return filteredPosts;
+  })
+
+$searchFilter
+  .on(searchFilterChanged, (state, data) => {return data})
+
+$statusFilter
+  .on(statusFilterChanged, (state,data) => {return data})
+
+$isReplyCommentModalOpen
+  .on(isReplyCommentModalChanged, (state, data) => {return data})
+  .on(replyCommentFx.doneData, (state, data) => {
+      return false;
+  })
+
+$replyText
+  .on(replyTextChanged, (state, data) => {return data})
+  .on(replyCommentFx.doneData, (state, data) => {
+      return "";
+  })
+
 

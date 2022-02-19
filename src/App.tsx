@@ -19,7 +19,7 @@ import { authModel } from "entities/auth";
 import { Setup } from "pages/setup";
 import { Comments } from "pages/comments";
 import { Spinner, Text } from '@chakra-ui/react'
-import {instagramPagePostsRequested} from "entities/media/model";
+// import {instagramPagePostsRequested} from "entities/media/model";
 
 export default function App() {
 
@@ -39,8 +39,8 @@ export default function App() {
   useEffect(() => {
     if (accessToken){
       // mediaModelUpdated.commentsStateChanged("LOADING");
-      userModel.effects.getUserPageIdFX();
-      updateInstagramPagePostsInformation();
+      // userModel.effects.getUserPageIdFX();
+      // updateInstagramPagePostsInformation();
     }
   }, [accessToken])
 
@@ -56,32 +56,32 @@ export default function App() {
   return <>
     <ChakraProvider>
       {
-        false ?
-            <div style={{
-              width: "100%",
-              height: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-            >
-              <Box
-                  display={"flex"}
-                  flexDirection={"column"}
-                  alignItems={"center"}
-              >
-                <Text
-                  fontWeight={30}
-                  fontSize={20}
-                  marginBottom={"7px"}
-                >
-                  Please, wait. Your profile is being processed by our smart AI ;)
-                </Text>
-                <Spinner size='xl'/>
-              </Box>
-            </div>
-            :
+        // false ?
+        //     <div style={{
+        //       width: "100%",
+        //       height: "100vh",
+        //       display: "flex",
+        //       flexDirection: "column",
+        //       alignItems: "center",
+        //       justifyContent: "center"
+        //     }}
+        //     >
+        //       <Box
+        //           display={"flex"}
+        //           flexDirection={"column"}
+        //           alignItems={"center"}
+        //       >
+        //         <Text
+        //           fontWeight={30}
+        //           fontSize={20}
+        //           marginBottom={"7px"}
+        //         >
+        //           Please, wait. Your profile is being processed by our smart AI ;)
+        //         </Text>
+        //         <Spinner size='xl'/>
+        //       </Box>
+        //     </div>
+        //     :
             <div style={{width: "100%", height: "100vh"}}>
               <Header/>
               <Switch>
@@ -94,24 +94,24 @@ export default function App() {
                 <Route path="/home">
                   <Home/>
                 </Route>
-                <Route path={"/tutorials"}>
-                  <CommingSoon/>
-                </Route>
-                <Route path={"/messages"}>
-                  <CommingSoon/>
-                </Route>
-                {/*<Route path={"/insights"}>*/}
-                {/*  <UserInsights/>*/}
+                {/*<Route path={"/tutorials"}>*/}
+                {/*  <CommingSoon/>*/}
                 {/*</Route>*/}
-                <Route path={"/setup"}>
-                  <Setup/>
-                </Route>
-                <Route path={"/comments"}>
-                  <Comments/>
-                </Route>
-                <Route path={"/"}>
-                  <Redirect to={"/home"}/>
-                </Route>
+                {/*<Route path={"/messages"}>*/}
+                {/*  <CommingSoon/>*/}
+                {/*</Route>*/}
+                {/*/!*<Route path={"/insights"}>*!/*/}
+                {/*/!*  <UserInsights/>*!/*/}
+                {/*/!*</Route>*!/*/}
+                {/*<Route path={"/setup"}>*/}
+                {/*  <Setup/>*/}
+                {/*</Route>*/}
+                {/*<Route path={"/comments"}>*/}
+                {/*  <Comments/>*/}
+                {/*</Route>*/}
+                {/*<Route path={"/"}>*/}
+                {/*  <Redirect to={"/home"}/>*/}
+                {/*</Route>*/}
               </Switch>
             </div>
       }

@@ -15,7 +15,7 @@ import {reflect} from "@effector/reflect";
 //id,like_count,caption,media_url,media_type,timestamp,thumbnail_url,permalink"
 interface IProps {
   posts: mediaTyping.Post[],
-  setSelectedPostId: (id: number) => void,
+  setSelectedPostId: (id: string) => void,
 }
 
 export const View: FC<IProps> = ({

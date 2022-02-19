@@ -2,16 +2,24 @@ import React from 'react';
 import {Box, Flex, Image} from "@chakra-ui/react";
 import {CommentsManagement} from "../../../features/comments-management/ui";
 import {useStore} from "effector-react";
-import {serviceModel} from "entities/post-menu-services";
+import { postMenuServicesModel, postMenuServicesConfig } from "entities/post-menu-services";
+import type { CommentsServicesState } from "entities/post-menu-services";
 import {PostInsights} from "features/post-insights";
+import {reflect} from "@effector/reflect";
 
-export const Comments = () => {
+
+type Props = {
+  postMenuService: CommentsServicesState,
+}
+
+export const CommentsView = ({
+  postMenuService,
+}: Props) => {
 
     let renderWindow = <CommentsManagement/>
-    const commentsServiceState = useStore(serviceModel.stores.$commentsServiceState);
-    if (commentsServiceState === "OVERVIEW"){
+    if (postMenuService === "OVERVIEW"){
         renderWindow = <PostInsights/>
-    } else if (commentsServiceState === "MANAGEMENT"){
+    } else if (postMenuService === "MANAGEMENT"){
         renderWindow = <CommentsManagement/>
     } else {
         renderWindow =
@@ -66,3 +74,10 @@ export const Comments = () => {
         </Box>
     )
 }
+
+export const Comments = reflect({
+  view: CommentsView,
+  bind: {
+    postMenuService: postMenuServicesModel.$postMenuService,
+  }
+})

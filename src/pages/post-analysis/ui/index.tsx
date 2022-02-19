@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {mediaModel, mediaTyping} from "entities/media";
 import {LeftMenuForPost} from "widgets/left-menu-for-post";
 import { useParams } from 'react-router-dom';
-import {Comments} from "../../../widgets/comments/ui";
-import {graphApi} from "../../../shared/api/graph-api";
+import {Comments} from "widgets/comments";
 import {reflect} from "@effector/reflect";
 import {Box} from "@chakra-ui/react";
 

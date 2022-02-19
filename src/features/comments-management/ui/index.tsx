@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {mediaModel, mediaModelUpdated} from "../../../entities/media";
+import { mediaModel } from "entities/media";
 import {
     Box,
     Button,
@@ -30,25 +30,41 @@ import {
 
 import {SearchIcon, CloseIcon} from "@chakra-ui/icons";
 import {useStore} from "effector-react";
-import {commentsManagementModel} from "../model";
-import {graphApi} from "../../../shared/api/graph-api";
+import * as model from "../model";
+import {graphApi} from "shared/api/graph-api";
 import {useParams} from "react-router-dom";
+import {reflect} from "@effector/reflect";
 
 
 
 
-export const CommentsManagement = () => {
-    const selectedPostId = mediaModel.selectors.useSelectedPostId();
-    const postComments = useStore(mediaModelUpdated.$processedCommentsWithStatus);
-    console.warn("check for post-analysis comments")
-    console.log(postComments);
+type Props = {
+  selectedPostId: string,
+  postComments: any[],
+  statusFilter: any,
+  searchFilter: any,
+  filteredPosts: any,
+}
+
+export const View = ({
+  selectedPostId,
+  postComments,
+  statusFilter,
+  searchFilter,
+  filteredPosts,
+}: Props) => {
+    // const selectedPostId = mediaModel.selectors.useSelectedPostId();
+    // const postComments = useStore(mediaModelUpdated.$processedCommentsWithStatus);
+    // console.warn("check for post-analysis comments")
+    // console.log(postComments);
     // console.log(selectedPostId);
-    const thresholds = useStore(mediaModelUpdated.$thresholds);
-    const statusFilter = useStore(commentsManagementModel.stores.$statusFilter);
-    const searchFilter = useStore(commentsManagementModel.stores.$searchFilter);
-    const filteredPosts = useStore(commentsManagementModel.stores.$filteredComments);
+    // const thresholds = useStore(mediaModelUpdated.$thresholds);
+    // const statusFilter = useStore(commentsManagementModel.stores.$statusFilter);
+    // const searchFilter = useStore(commentsManagementModel.stores.$searchFilter);
+    // const filteredPosts = useStore(commentsManagementModel.stores.$filteredComments);
 
-    const selectedPostCommentsIdsMap = useStore(mediaModel.stores.$selectedPostCommentsIdsMap);
+    // TODO: #?
+    // const selectedPostCommentsIdsMap = useStore(mediaModel.stores.$selectedPostCommentsIdsMap);
 
     const isReplyCommentModalOpen = useStore(commentsManagementModel.stores.$isReplyCommentModalOpen);
     const replyCommentText = useStore(commentsManagementModel.stores.$replyText);
@@ -57,11 +73,11 @@ export const CommentsManagement = () => {
     const [loadingState, setLoadingState] = useState("NONE");
     let { mediaId } = useParams();
     useEffect(() => {
-        commentsManagementModel.events.filter({
-            posts: postComments,
-            searchFilter: searchFilter,
-            statusFilter: statusFilter
-        })
+        // commentsManagementModel.events.filter({
+        //     posts: postComments,
+        //     searchFilter: searchFilter,
+        //     statusFilter: statusFilter
+        // })
     }, [postComments, statusFilter, searchFilter])
 
     useEffect(() => {
@@ -472,3 +488,16 @@ export const CommentsManagement = () => {
         </Flex>
     )
 }
+
+
+export const CommentsManagement = reflect({
+  view: View,
+  bind: {
+    selectedPostId: mediaModel.$selectedPostId,
+    postComments: mediaModel.$postComments,
+    statusFilter: model.$statusFilter,
+    searchFilter: model.$searchFilter,
+    filteredPosts: model.$filteredComments,
+    // selectedPostCommentsIdsMap: media.$sele
+  },
+})
