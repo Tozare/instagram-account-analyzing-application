@@ -11,7 +11,7 @@ import {
 import { Home } from "pages/home";
 import { Header } from "widgets/header";
 import { Posts } from "pages/posts";
-import { PostAnalysis } from "pages/post-analysis";
+import { Post } from "pages/post-analysis";
 import { CommingSoon } from "pages/comming-soon/ui";
 import { userModel } from "entities/user";
 import { mediaModel } from "entities/media";
@@ -19,7 +19,19 @@ import { authModel } from "entities/auth";
 import { Setup } from "pages/setup";
 import { Comments } from "pages/comments";
 import { Spinner, Text } from '@chakra-ui/react'
+import {sample} from "effector";
+import {FishingUsers} from "pages/fishing-users/ui";
 // import {instagramPagePostsRequested} from "entities/media/model";
+
+sample({
+  clock: authModel.$authToken,
+  target: userModel.getUserPageIdFX,
+})
+
+sample({
+  clock: userModel.postUserInformation.doneData,
+  target: mediaModel.instagramPagePostsRequested,
+});
 
 export default function App() {
 
@@ -37,11 +49,13 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (accessToken){
-      // mediaModelUpdated.commentsStateChanged("LOADING");
-      // userModel.effects.getUserPageIdFX();
-      // updateInstagramPagePostsInformation();
-    }
+    // if (accessToken){
+    //   console.log("accestoken");
+    //   mediaModel.commentsStateChanged("LOADING");
+    //   // userModel.getUserPageIdFX();
+    //   // updateInstagramPagePostsInformation();
+    //   // mediaModel.instagramPagePostsRequested;
+    // }
   }, [accessToken])
 
 
@@ -89,26 +103,26 @@ export default function App() {
                   <Posts/>
                 </Route>
                 <Route path="/media/:mediaId" exact={true}>
-                  <PostAnalysis/>
+                  <Post/>
                 </Route>
                 <Route path="/home">
                   <Home/>
                 </Route>
-                {/*<Route path={"/tutorials"}>*/}
-                {/*  <CommingSoon/>*/}
-                {/*</Route>*/}
-                {/*<Route path={"/messages"}>*/}
-                {/*  <CommingSoon/>*/}
-                {/*</Route>*/}
+                <Route path={"/tutorials"}>
+                  <CommingSoon/>
+                </Route>
+                <Route path={"/users"}>
+                  <FishingUsers/>
+                </Route>
                 {/*/!*<Route path={"/insights"}>*!/*/}
                 {/*/!*  <UserInsights/>*!/*/}
                 {/*/!*</Route>*!/*/}
-                {/*<Route path={"/setup"}>*/}
-                {/*  <Setup/>*/}
-                {/*</Route>*/}
-                {/*<Route path={"/comments"}>*/}
-                {/*  <Comments/>*/}
-                {/*</Route>*/}
+                <Route path={"/setup"}>
+                  <Setup/>
+                </Route>
+                <Route path={"/comments"}>
+                  <Comments/>
+                </Route>
                 {/*<Route path={"/"}>*/}
                 {/*  <Redirect to={"/home"}/>*/}
                 {/*</Route>*/}

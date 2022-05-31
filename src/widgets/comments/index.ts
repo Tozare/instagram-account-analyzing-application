@@ -1,1 +1,1 @@
-export { Comments } from "./ui";
+export { PostCommentsAnalyzationWindow } from "./ui";

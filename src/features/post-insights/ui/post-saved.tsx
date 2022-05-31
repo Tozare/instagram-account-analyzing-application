@@ -1,13 +1,13 @@
 import React from 'react';
 import {useStore} from "effector-react";
-import {mediaModel} from "../../../entities/media";
+import {mediaModel} from "entities/media";
 import {Box, Heading, Text} from "@chakra-ui/react";
 
 
 
 export const PostSaved = () => {
 
-    const postInsights = useStore(mediaModel.stores.$postMetrics);
+    const postInsights = useStore(mediaModel.$postMetrics);
     console.log(postInsights);
 
     return (

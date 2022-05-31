@@ -83,12 +83,12 @@ export const View = ({
                         lineHeight={"65px"}
                         height={"65px"}
                         fontWeight={500}
-                        borderBottom={location.pathname.includes("/messages") ? "2.5px solid #2F2F2F" : ""}
+                        borderBottom={location.pathname.includes("/users") ? "2.5px solid #2F2F2F" : ""}
                         onClick={() => {
-                            history.push('/messages');
+                            history.push('/users');
                         }}
                     >
-                        messages
+                        users
                     </Text>
                     <Text
                         paddingLeft={"7px"}

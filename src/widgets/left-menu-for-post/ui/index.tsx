@@ -1,35 +1,40 @@
-import React, {FC} from 'react';
-import {Box, Flex, Image, Text} from "@chakra-ui/react";
+import React, { FC } from 'react';
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react"
 import { AiOutlineFund, AiOutlineHome, AiOutlineRead, AiOutlineControl } from "react-icons/ai"
 
-import {postMenuServicesModel, postMenuServicesTyping, postMenuServicesConfig} from "entities/post-menu-services";
-import {reflect} from "@effector/reflect";
+import { postMenuServicesModel, postMenuServicesConfig } from "entities/post-menu-services";
+import type { CommentsServicesState } from "entities/post-menu-services";
+import { reflect } from "@effector/reflect";
 
 interface IProps {
-  postMenuService: postMenuServicesTyping.CommentsServicesState,
-  changePostMenuService: (data: postMenuServicesTyping.CommentsServicesState) => void,
+  postMenuService: CommentsServicesState,
+  onChangePostMenuService: (data: CommentsServicesState) => void,
 }
 
 const View: FC<IProps> = ({
   postMenuService,
-  changePostMenuService,
+  onChangePostMenuService,
 }) => {
 
     return (
-        <Flex
-            width={"195px"}
+        <Box
+          flexGrow={0}
+            display="flex"
+            flexDir={"column"}
+            width={"400px"}
             height={"calc(100vh - 66px)"}
             minHeight={"100%"}
             backgroundColor={"#FCFCFC"}
             paddingTop={"30px"}
-            flexDirection={"column"}
+            // flexDirection={"column"}
             paddingLeft={"5px"}
             paddingRight={"5px"}
         >
             <Box
                 display={"flex"}
                 height={"40px"}
+                w={"100%"}
                 borderRadius={"4px"}
                 flexDirection={"row"}
                 alignItems={"center"}
@@ -39,7 +44,7 @@ const View: FC<IProps> = ({
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 as={"button"}
                 onClick={() => {
-                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.OVERVIEW)
+                    onChangePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.OVERVIEW)
                 }}
             >
                 <Icon
@@ -48,10 +53,11 @@ const View: FC<IProps> = ({
                 <Text
                     marginLeft={"7px"}
                 >
-                    Overview
+                    Line graph
                 </Text>
             </Box>
             <Box
+              w={"100%"}
                 display={"flex"}
                 height={"40px"}
                 borderRadius={"4px"}
@@ -64,7 +70,7 @@ const View: FC<IProps> = ({
                 marginTop={"6px"}
                 as={"button"}
                 onClick={() => {
-                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.GRAPHS)
+                    onChangePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.GRAPHS)
                 }}
             >
                 <Icon
@@ -73,9 +79,35 @@ const View: FC<IProps> = ({
                 <Text
                     marginLeft={"7px"}
                 >
-                    Graphs
+                    Insights
                 </Text>
             </Box>
+          <Box
+            w={"100%"}
+            display={"flex"}
+            height={"40px"}
+            borderRadius={"4px"}
+            flexDirection={"row"}
+            alignItems={"center"}
+            paddingLeft={"10px"}
+            backgroundColor={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.CLUSTER_GRAPH ? "#2F2F2F" : "#FFFFFF"}
+            color={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.CLUSTER_GRAPH ? "#FFFFFF" : "#2F2F2F"}
+            _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
+            marginTop={"6px"}
+            as={"button"}
+            onClick={() => {
+              onChangePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.CLUSTER_GRAPH)
+            }}
+          >
+            <Icon
+              as={AiOutlineFund}
+            />
+            <Text
+              marginLeft={"7px"}
+            >
+              Cluster graph
+            </Text>
+          </Box>
             <Box
                 display={"flex"}
                 height={"40px"}
@@ -88,20 +120,19 @@ const View: FC<IProps> = ({
                 color={postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT ? "#FFFFFF" : "#2F2F2F"}
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 onClick={() => {
-                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT)
+                    onChangePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT)
                 }}
             >
                 <Icon
-                    // color={commentsServiceState === "MANAGEMENT" ? "#FFFFFF" : "#2F2F2F"}
                     as={AiOutlineControl}
                 />
                 <Text
-                    // color={commentsServiceState === "MANAGEMENT" ? "#FFFFFF" : "#2F2F2F"}
                     marginLeft={"7px"}>
-                    Management
+                    Comments list
                 </Text>
             </Box>
             <Box
+              w={"100%"}
                 display={"flex"}
                 height={"40px"}
                 borderRadius={"4px"}
@@ -113,7 +144,7 @@ const View: FC<IProps> = ({
                 _hover={{backgroundColor: "#2F2F2F", color: "#FFFFFF"}}
                 marginTop={"6px"}
                 onClick={() => {
-                    changePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.TUTORIALS)
+                    onChangePostMenuService(postMenuServicesConfig.POST_MENU_SERVICES.TUTORIALS)
                 }}
             >
                 <Icon
@@ -125,7 +156,7 @@ const View: FC<IProps> = ({
                     Tutorials
                 </Text>
             </Box>
-        </Flex>
+        </Box>
     )
 }
 
@@ -133,6 +164,6 @@ export const LeftMenuForPost = reflect({
   view: View,
   bind: {
     postMenuService: postMenuServicesModel.$postMenuService,
-    changePostMenuService: postMenuServicesModel.postMenuServiceChanged,
+    onChangePostMenuService: postMenuServicesModel.postMenuServiceChanged,
   },
 })

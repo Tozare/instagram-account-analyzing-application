@@ -13,17 +13,22 @@ import {
 } from "../typing";
 import {forward} from "effector/effector.mjs";
 
+
+export const isLoadingChanged = createEvent<boolean>();
+export const $isLoading = restore(isLoadingChanged, false);
+
 export const postsChanged = createEvent<Post[]>();
 export const $posts = restore(postsChanged, []);
 
 export const postCommentsChanged = createEvent<Comment[]>();
 export const $postComments = restore(postCommentsChanged, []);
 
+
 export const selectedPostIdChanged = createEvent<string>()
 export const $selectedPostId = restore(selectedPostIdChanged,"");
 
-export const selectedPostCommentIdsMapChanged = createEvent<{[key: string | number]: boolean}>();
-export const $selectedPostCommentsIdsMap = restore(selectedPostCommentIdsMapChanged,{});
+// export const selectedPostCommentIdsMapChanged = createEvent<{[key: string | number]: boolean}>();
+// export const $selectedPostCommentsIdsMap = restore(selectedPostCommentIdsMapChanged,{});
 
 export const postMetricsChanged = createEvent<PostMetrics[]>()
 export const $postMetrics = restore(postMetricsChanged,[]);
@@ -43,7 +48,7 @@ export const $postSaved = restore(postSavedChanged,{});
 export const postCommentsMapChanged = createEvent<{[key: string]: Comment[]}>();
 export const $postCommentsMap = restore(postCommentsMapChanged,{});
 
-export const selectedPostCommentIdInMapChanged = createEvent<string|number>();
+// export const selectedPostCommentIdInMapChanged = createEvent<string|number>();
 export const deleteSelectedPostComments = createEvent<(number|string)[]>();
 
 export const instagramPagePostsRequested = createEvent();
@@ -57,7 +62,7 @@ export const getAllMediaPostsFx = createEffect(async (): Promise<Post[]> => {
 forward({
   from: instagramPagePostsRequested,
   to: getAllMediaPostsFx,
-})
+});
 
 export const getPostCommentsFx = createEffect(async (params: {postId: string}) => {
   const mediaComments = await graphApi.getMediaComments(params.postId);
@@ -102,20 +107,20 @@ $postComments
   })
 
 
-$selectedPostCommentsIdsMap
-    .on(selectedPostCommentIdInMapChanged, (state, data) => {
-        if (state[data]){
-            return {
-                ...state,
-                [data]: true
-            };
-        } else {
-            return {
-                ...state,
-                [data]: true
-            };
-        }
-    });
+// $selectedPostCommentsIdsMap
+//     .on(selectedPostCommentIdInMapChanged, (state, data) => {
+//         if (state[data]){
+//             return {
+//                 ...state,
+//                 [data]: true
+//             };
+//         } else {
+//             return {
+//                 ...state,
+//                 [data]: true
+//             };
+//         }
+//     });
 
 
 $postMetrics
@@ -124,18 +129,6 @@ $postMetrics
   })
 
 
-// useEffect(() => {
-//     console.log(mediaId);
-//     if (selectedPostId){
-//         // mediaModel.effects.getPostCommentsFx({postId: selectedPostId});
-//         // graphApi.getMediaInsights(mediaId);
-//         mediaModel.effects.getPostInsightsFX({mediaId: selectedPostId});
-//     } else if(mediaId) {
-//         // mediaModel.effects.getPostCommentsFx({postId: mediaId});
-//         mediaModel.effects.getPostInsightsFX({mediaId: mediaId});
-//     }
-//
-// }, [selectedPostId])
 
 sample({
   clock: $selectedPostId,
@@ -147,8 +140,39 @@ sample({
   ],
 })
 
-//TODO: FIX
+// TODO: FIX
+// sample({
+//   clock: getAllMediaPostsFx.doneData,
+//   fn: (posts) => {
+//     const postsData = posts.map((post) => {
+//       return {
+//         id: post.id,
+//         text: post.caption ? post.caption : "NO_CAPTION",
+//         date_posted: post.timestamp,
+//         profile_id: post.owner.id,
+//         like_count: post.like_count,
+//         comment_count: post.comment_count ? post.comment_count : 0
+//       }
+//     });
+//
+//     const comments = [];
+//     for (let i=0;i<posts.length;i++){
+//       const mediaComments = await graphApi.getMediaComments(posts[i].id)
+//       // console.log(mediaComments);
+//       // postCommentsMap[posts[i].id] = mediaComments;
+//       mediaComments.forEach((mediaComment) => {
+//         comments.push(mediaComment);
+//       })
+//     }
+//     return {
+//       posts: postsData,
+//       comments: comments,
+//     }
+//   },
+//   target:
+// })
 getAllMediaPostsFx.doneData.watch(async (posts) => {
+  // console.log("getAllMediaPostsFx.doneData");
     const postsData = posts.map((post) => {
         return {
             id: post.id,
@@ -170,17 +194,19 @@ getAllMediaPostsFx.doneData.watch(async (posts) => {
         mediaComments.forEach((mediaComment) => {
             comments.push(mediaComment);
         })
-
     }
-
+    // console.log("comments");
+    // console.log(comments);
     const postRes = await backendAPI.postComments(comments);
     // console.log(postRes);
+
     if (postRes.status === 200){
         const processedComments = await backendAPI.getComments();
-        console.log(processedComments);
+        // console.log(processedComments);
         // processedComments
         processedCommentsChanged(processedComments.data);
         commentsStateChanged("NONE");
+        isLoadingChanged(false);
     }
 })
 
@@ -188,7 +214,6 @@ getAllMediaPostsFx.doneData.watch(async (posts) => {
 export const $processedComments = createStore<ProcessedComment[]>([]);
 export const processedCommentsChanged = createEvent<ProcessedComment[]>();
 $processedComments.on(processedCommentsChanged, (_,data) => data);
-
 
 export const $selectedPostProcessedComments = createStore<ProcessedComment[]>([]);
 
@@ -206,13 +231,10 @@ export type Thresholds = {
 }
 
 
-
-
-export const $processedCommentsWithStatus = createStore<any[]>([]);
-export const processedCommentsWithStatusChanged = createEvent<any[]>();
-$processedCommentsWithStatus.on(processedCommentsWithStatusChanged, (_,data) => data);
-
-
+// export const $processedCommentsWithStatus = createStore<any[]>([]);
+// export const processedCommentsWithStatusChanged = createEvent<any[]>();
+// $processedCommentsWithStatus.on(processedCommentsWithStatusChanged, (_,data) => data);
+// $processedCommentsWithStatus.watch(console.log);
 
 
 // $processedComments.watch((state) => {
@@ -225,7 +247,23 @@ $processedCommentsWithStatus.on(processedCommentsWithStatusChanged, (_,data) => 
 //     console.log(state);
 // })
 
+sample({
+  clock: $selectedPostId,
+  fn: (id) => {
+    return {
+      postId: id,
+    };
+  },
+  target: [
+    isLoadingChanged.prepend(() => true),
+    getPostCommentsFx,
+  ],
+})
 
+// sample({
+//   clock: getPostCommentsFx.doneData,
+//   target: isLoadingChanged.prepend(() => false),
+// });
 
 sample({
     clock: $selectedPostId,

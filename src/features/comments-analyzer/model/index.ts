@@ -1,30 +1,40 @@
 import {combine, createEvent, createStore, sample} from "effector";
-import {mediaModel} from "entities/media";
+import { mediaModel } from "entities/media";
+import { thresholdsModel } from "entities/thresholds";
+import * as config from "../config";
+
+export const thresholdsChanged = createEvent();
 
 export const $insultThreshold = createStore<number>(0.5);
 export const insultThresholdChanged = createEvent<number>();
 $insultThreshold.on(insultThresholdChanged, (_,data) => data);
+$insultThreshold.on(thresholdsModel.$insultThreshold, (_,data) => data);
 
 export const $identityHateThreshold = createStore<number>(0.5);
 export const identityHateThresholdChanged = createEvent<number>();
 $identityHateThreshold.on(identityHateThresholdChanged, (_,data) => data);
+$identityHateThreshold.on(thresholdsModel.$identityHateThreshold, (_,data) => data);
 
 
 export const $obsceneThreshold = createStore<number>(0.5);
 export const obsceneThresholdChanged = createEvent<number>();
 $obsceneThreshold.on(obsceneThresholdChanged, (_,data) => data);
+$obsceneThreshold.on(thresholdsModel.$obsceneThreshold, (_,data) => data);
 
 export const $severeToxicThreshold = createStore<number>(0.5);
 export const severeToxicThresholdChanged = createEvent<number>();
 $severeToxicThreshold.on(severeToxicThresholdChanged, (_,data) => data);
+$severeToxicThreshold.on(thresholdsModel.$severeToxicThreshold, (_,data) => data);
 
 export const $threatThreshold = createStore<number>(0.5);
 export const threatThresholdChanged = createEvent<number>();
 $threatThreshold.on(threatThresholdChanged, (_,data) => data);
+$threatThreshold.on(thresholdsModel.$threatThreshold, (_,data) => data);
 
 export const $toxicThreshold = createStore<number>(0.5);
 export const toxicThresholdChanged = createEvent<number>();
 $toxicThreshold.on(toxicThresholdChanged, (_,data) => data);
+$toxicThreshold.on(thresholdsModel.$toxicThreshold, (_,data) => data);
 
 
 export const $thresholds = combine({
@@ -45,56 +55,56 @@ export const $thresholds = combine({
   })
 );
 
-sample({
-  source: [$thresholds, mediaModel.$processedComments],
-  fn: ([threshold, processedComments]) => {
-    const {
-      insultThreshold,
-      identityHateThreshold,
-      obsceneThreshold,
-      severeToxicThreshold,
-      threatThreshold,
-      toxicThreshold
-    } = threshold
 
-    const processedCommentsWithStatus = processedComments.map((processedComment) => {
-      let commentStatus = "POSITIVE";
-      if (
-        parseFloat(processedComment.insult) >= insultThreshold
-        || parseFloat(processedComment.identity_hate) >= identityHateThreshold
-        || parseFloat(processedComment.obscene) >= obsceneThreshold
-        || parseFloat(processedComment.severe_toxic) >= severeToxicThreshold
-        || parseFloat(processedComment.threat) >= threatThreshold
-        || parseFloat(processedComment.toxic) >= toxicThreshold
-      ){
-        commentStatus = "NEGATIVE"
-      }
-      const proccessedReplyWithStatus = processedComment.replies.map((processedReply) => {
-        let replyStatus = "POSITIVE";
-        if (
-          parseFloat(processedReply.insult) >= insultThreshold
-          || parseFloat(processedReply.identity_hate) >= identityHateThreshold
-          || parseFloat(processedReply.obscene) >= obsceneThreshold
-          || parseFloat(processedReply.severe_toxic) >= severeToxicThreshold
-          || parseFloat(processedReply.threat) >= threatThreshold
-          || parseFloat(processedReply.toxic) >= toxicThreshold
-        ){
-          replyStatus = "NEGATIVE"
-        }
-        return {
-          ...processedReply,
-          status: replyStatus
-        }
-      })
-      return {
-        ...processedComment,
-        replies: proccessedReplyWithStatus,
-        status: commentStatus
-      }
-    })
-    return processedCommentsWithStatus;
+sample({
+  clock: thresholdsChanged,
+  source: $thresholds,
+  fn: (thresholds) => {
+    return thresholds;
   },
   target: [
-    mediaModel.processedCommentsWithStatusChanged,
+    thresholdsModel.toxicThresholdChanged.prepend(({ toxicThreshold }) => toxicThreshold),
+    thresholdsModel.insultThresholdChanged.prepend(({ insultThreshold }) => insultThreshold),
+    thresholdsModel.identityHateThresholdChanged.prepend(({ identityHateThreshold }) => identityHateThreshold),
+    thresholdsModel.obsceneThresholdChanged.prepend(({ obsceneThreshold }) => obsceneThreshold),
+    thresholdsModel.severeToxicThresholdChanged.prepend(({ severeToxicThreshold }) => severeToxicThreshold),
+    thresholdsModel.threatThresholdChanged.prepend(({ threatThreshold }) => threatThreshold),
+    thresholdsModel.toxicThresholdChanged.prepend(({ toxicThreshold }) => toxicThreshold),
+  ]
+})
+
+export const thresholdsTemplateChanged = createEvent<string>();
+export const $thresholdsTemplate = createStore<string>("CUSTOM");
+$thresholdsTemplate
+  .on(thresholdsTemplateChanged, (_, data) => data);
+
+// sample({
+//   clock: [
+//     insultThresholdChanged,
+//     identityHateThresholdChanged,
+//     obsceneThresholdChanged,
+//     severeToxicThresholdChanged,
+//     threatThresholdChanged,
+//     severeToxicThresholdChanged,
+//     toxicThresholdChanged,
+//   ],
+//   target: thresholdsTemplateChanged.prepend(() => "CUSTOM"),
+// });
+
+
+sample({
+  clock: thresholdsTemplateChanged,
+  fn: (templateKey) => {
+    const template = config.THRESHOLDS_TEMPLATES[templateKey];
+    return template
+  },
+  target: [
+    toxicThresholdChanged.prepend(({ toxicThreshold }) => toxicThreshold),
+    insultThresholdChanged.prepend(({ insultThreshold }) => insultThreshold),
+    identityHateThresholdChanged.prepend(({ identityHateThreshold }) => identityHateThreshold),
+    obsceneThresholdChanged.prepend(({ obsceneThreshold }) => obsceneThreshold),
+    severeToxicThresholdChanged.prepend(({ severeToxicThreshold }) => severeToxicThreshold),
+    threatThresholdChanged.prepend(({ threatThreshold }) => threatThreshold),
+    toxicThresholdChanged.prepend(({ toxicThreshold }) => toxicThreshold),
   ]
 })

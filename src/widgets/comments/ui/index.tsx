@@ -1,25 +1,32 @@
 import React from 'react';
 import {Box, Flex, Image} from "@chakra-ui/react";
-import {CommentsManagement} from "../../../features/comments-management/ui";
+import { CommentsManagement } from "features/comments-management/ui";
 import {useStore} from "effector-react";
 import { postMenuServicesModel, postMenuServicesConfig } from "entities/post-menu-services";
 import type { CommentsServicesState } from "entities/post-menu-services";
 import {PostInsights} from "features/post-insights";
+import { DateCommentGraph } from "features/comments-management";
 import {reflect} from "@effector/reflect";
+import {ClusterCommentsGraph} from "features/comments-management/ui/cluster-comments-graph";
 
 
 type Props = {
   postMenuService: CommentsServicesState,
 }
 
-export const CommentsView = ({
+export const PostCommentsAnalyzationWindowView = ({
   postMenuService,
 }: Props) => {
 
     let renderWindow = <CommentsManagement/>
-    if (postMenuService === "OVERVIEW"){
-        renderWindow = <PostInsights/>
-    } else if (postMenuService === "MANAGEMENT"){
+    if (postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.OVERVIEW){
+        // renderWindow = <PostInsights/>
+      renderWindow = <DateCommentGraph/>
+    } else if (postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.CLUSTER_GRAPH){
+      renderWindow = <ClusterCommentsGraph />
+    } else if (postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.GRAPHS){
+      renderWindow = < PostInsights/>
+    } else if (postMenuService === postMenuServicesConfig.POST_MENU_SERVICES.MANAGEMENT){
         renderWindow = <CommentsManagement/>
     } else {
         renderWindow =
@@ -53,7 +60,7 @@ export const CommentsView = ({
                     <Box
                         marginTop={"10px"}
                     >
-                        We are working hard to improve our application
+                        Please, wait :)
                     </Box>
                 </Flex>
             </Flex>
@@ -75,8 +82,8 @@ export const CommentsView = ({
     )
 }
 
-export const Comments = reflect({
-  view: CommentsView,
+export const PostCommentsAnalyzationWindow = reflect({
+  view: PostCommentsAnalyzationWindowView,
   bind: {
     postMenuService: postMenuServicesModel.$postMenuService,
   }

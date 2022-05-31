@@ -15,7 +15,7 @@ export const postUser = (user: any) => {
     console.log(postData);
     // axios.post-analysis(url, postData)
     axios({
-        method: 'post',
+        method: 'POST',
         url: url,
         headers: {
             'Content-Type': 'application/json'
@@ -23,6 +23,7 @@ export const postUser = (user: any) => {
         data: postData
     })
         .then((res) => {
+          // console.log(res)
             console.log(res);
         })
         .catch((e) => {

@@ -31,6 +31,7 @@
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "react-vis": "^1.11.7",
+    "recharts": "^2.1.9",
     "to-string-loader": "^1.2.0"
   },
   "devDependencies": {

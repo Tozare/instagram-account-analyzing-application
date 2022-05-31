@@ -1,5 +1,5 @@
 import React from 'react';
-import {SearchCommentsByMeaning} from "../../../features/search-comments-by-meaning/ui";
+import {SearchCommentsByMeaning} from "features/search-comments-by-meaning/ui";
 
 export const Comments = () => {
 

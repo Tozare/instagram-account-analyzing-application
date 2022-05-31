@@ -28,7 +28,7 @@ export const postComments = async (comments: any[]) => {
         }
     })
 
-    console.log(bodyData);
+    console.warn(bodyData);
 
     const res= await axios({
         method: 'POST',
@@ -38,6 +38,8 @@ export const postComments = async (comments: any[]) => {
         },
         data: bodyData
     });
+
+    console.log(res);
 
     return res;
 }

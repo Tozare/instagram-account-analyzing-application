@@ -1,1 +1,1 @@
-export { PostAnalysis } from "./ui";
+export { Post } from "./ui";

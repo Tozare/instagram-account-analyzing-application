@@ -1,13 +1,13 @@
 import React from 'react';
 import {useStore} from "effector-react";
-import {mediaModel} from "../../../entities/media";
+import {mediaModel} from "entities/media";
 import {Box, Flex, Heading, Text} from "@chakra-ui/react";
 import {RadialChart} from "react-vis";
 
 
 export const PostReach = () => {
 
-    const postInsights = useStore(mediaModel.stores.$postMetrics);
+    const postInsights = useStore(mediaModel.$postMetrics);
     console.log(postInsights);
 
     const uniqueViewColor = "#FF9636";

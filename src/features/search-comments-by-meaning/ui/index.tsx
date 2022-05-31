@@ -10,12 +10,15 @@ import {
     ModalCloseButton,
     ModalContent, ModalFooter,
     ModalHeader,
-    ModalOverlay, Select, Spinner, toast, useToast
+    ModalOverlay, Select, Spinner, toast, useToast,
+  Text
 } from "@chakra-ui/react";
-import {mediaModel} from "../../../entities/media";
-import {commentsManagementModel} from "../../comments-management/model";
+import {mediaModel} from "entities/media";
+import {commentsManagementBaseModel} from "features/comments-management";
+import { thresholdsModel } from "entities/thresholds";
 import {CloseIcon, Search2Icon, SearchIcon} from "@chakra-ui/icons";
 import {$isReplyModalOpen} from "../model";
+import {useStore} from "effector-react";
 
 interface IViewProps {
     state: string,
@@ -29,7 +32,7 @@ interface IViewProps {
     onChangeReplyModalState: (data: boolean) => void,
     replyText: string,
     onChangeReplyText: (data: string) => void,
-    thresholds: mediaModelUpdated.Thresholds
+    thresholds: any,
 }
 //TODO:
 const View: FC<IViewProps> = ({
@@ -49,6 +52,7 @@ const View: FC<IViewProps> = ({
 
     // console.log(comments)
     const [loadingState, setLoadingState] = useState("NONE");
+    const isLoading = useStore(model.$isLoading);
     const {
         toxicThreshold,
         severeToxicThreshold,
@@ -60,6 +64,8 @@ const View: FC<IViewProps> = ({
 
 
     const toast = useToast();
+    console.log("search")
+    console.warn(comments);
 
     return (
         <Flex
@@ -99,7 +105,7 @@ const View: FC<IViewProps> = ({
                             variant="green"
                             onClick={() => {
                                 setLoadingState("REPLYING");
-                                commentsManagementModel.effects.replyCommentFx({
+                                commentsManagementBaseModel.replyCommentFx({
                                     replyText: replyText,
                                     selectedPostComments: selectedComments
                                 }).then(() => {
@@ -180,6 +186,36 @@ const View: FC<IViewProps> = ({
                         Reply
                     </Button>
                 </Box>
+              <Box marginRight={"10px"}>
+                <Button
+                  width={"150px"}
+                  height={"38px"}
+                  // backgroundColor={"#FFCCCC"}
+                  // onClick={() => {
+                  //   setLoadingState("DELETION");
+                  //   mediaModel.deleteSelectedPostCommentsFx({
+                  //     selectedPostComments: selectedCommentsIds,
+                  //   }).then(() => {
+                  //     toast({
+                  //       title: "Comments were deleted",
+                  //       description: "Selected comments of the post-analysis were successfully deleted",
+                  //       status: "success",
+                  //       duration: 4500,
+                  //       isClosable: true,
+                  //     });
+                  //     setLoadingState("NONE");
+                  //   });
+                  // }}
+                >
+                  {
+                    loadingState === "DELETION"
+                      ? <div>
+                        <Spinner/>
+                      </div>
+                      : <div>Spam</div>
+                  }
+                </Button>
+              </Box>
                 <Box>
                     <Button
                         width={"150px"}
@@ -187,7 +223,7 @@ const View: FC<IViewProps> = ({
                         backgroundColor={"#FFCCCC"}
                         onClick={() => {
                             setLoadingState("DELETION");
-                            mediaModel.effects.deleteSelectedPostCommentsFx({
+                            mediaModel.deleteSelectedPostCommentsFx({
                                 selectedPostComments: selectedComments
                             }).then(() => {
                                 toast({
@@ -211,153 +247,445 @@ const View: FC<IViewProps> = ({
                     </Button>
                 </Box>
             </Flex>
-            <Grid
-                width={"100%"}
-                gridTemplateColumns={"repeat(7, auto)"}
-                flexGrow={1}
-                height={"auto"}
-                overflow={"auto"}
+          <Box
+            // backgroundColor="green"
+            width="100%"
+            display={"flex"}
+            flexDirection={"column"}
+            // height="calc(100% - 53px)"
+            flex={1}
+          >
+            <Box
+              width="100%"
+              height={"30px"}
+              display="flex"
+              flexDirection="row"
+              marginBottom={"6px"}
             >
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                    borderTopLeftRadius={"8px"}
-                    borderBottomLeftRadius={"8px"}
-                >
-                    <Box marginLeft={"5px"}>
-                        FROM
-                    </Box>
+              <Box
+                flex={1}
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                borderTopLeftRadius={"8px"}
+                borderBottomLeftRadius={"8px"}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  FROM
                 </Box>
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                    // borderTopLeftRadius={"8px"}
-                    // borderBottomLeftRadius={"8px"}
-                >
-                    <Box marginLeft={"5px"}>
-                        TO
-                    </Box>
+              </Box>
+              <Box
+                flex={1}
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  TO
                 </Box>
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                >
-                    <Box marginLeft={"5px"} >
-                        DATE
-                    </Box>
+              </Box>
+              <Box
+                flex={1}
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  DATE
                 </Box>
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                >
-                    <Box marginLeft={"5px"} >
-                        TEXT
-                    </Box>
+              </Box>
+              <Box
+                flex={1}
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  TEXT
                 </Box>
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                >
-                    <Box marginLeft={"5px"}>
-                        LIKES
-                    </Box>
+              </Box>
+              <Box
+                flex={1}
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  STATUS
                 </Box>
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                >
-                    <Box marginLeft={"5px"}>
-                        STATUS
-                    </Box>
+              </Box>
+              <Box
+                flex={1}
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  Tags
                 </Box>
-                <Box
-                    backgroundColor={"#bdc3c7"}
-                    height={"30px"}
-                    borderTopRightRadius={"8px"}
-                    borderBottomRightRadius={"8px"}
-                >
-                    <Box marginLeft={"5px"}>
-                        SELECT
-                    </Box>
+              </Box>
+              <Box
+                backgroundColor={"#bdc3c7"}
+                height={"30px"}
+                borderTopRightRadius={"8px"}
+                borderBottomRightRadius={"8px"}
+                flex={1}
+                display="flex"
+                flexDirection="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Box>
+                  SELECT
                 </Box>
-                {/*</GridItem>*/}
-                {
-                    comments.map(comment => {
+              </Box>
+            </Box>
+            {
+              isLoading
+                ? <Box
+                  width="100%"
+                  flex={1}
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text marginRight={"4px"}>Comments are loading</Text>
+                  <Spinner/>
+                </Box>
+                :
+                <Box
+                  width="100%"
+                  flex={1}
+                  display="flex"
+                  flexDirection="column"
+                  overflowY="scroll"
+                  maxHeight={"500px"}
+                >
+                  {
+                    comments.map(postComment => {
 
-                        let commentStatus = "POSITIVE";
-                        if (
-                            parseFloat(comment.insult) >= insultThreshold
-                            || parseFloat(comment.identity_hate) >= identityHateThreshold
-                            || parseFloat(comment.obscene) >= obsceneThreshold
-                            || parseFloat(comment.severe_toxic) >= severeToxicThreshold
-                            || parseFloat(comment.threat) >= threatThreshold
-                            || parseFloat(comment.toxic) >= toxicThreshold
-                        ){
-                            commentStatus = "NEGATIVE"
-                        }
-                        const commentListItem =
-                            <>
-                                <Box>
-                                    <Box marginLeft={"5px"}>
-                                        {comment.username ? comment.username : "username"}
-                                    </Box>
-                                </Box>
-                                <Box >
-                                    <Box marginLeft={"5px"} marginRight={"5px"}>
-                                        POST
-                                    </Box>
-                                </Box>
-                                <Box >
-                                    <Box marginLeft={"5px"} marginRight={"5px"}>
-                                        03.06.2000 & 18:00
-                                    </Box>
-                                </Box>
-                                <Box >
-                                    <Box marginLeft={"5px"} marginRight={"5px"}>
-                                        {comment.text}
-                                    </Box>
-                                </Box>
-                                <Box >
-                                    <Box marginLeft={"5px"} marginRight={"5px"}>
-                                        LIKES
-                                    </Box>
-                                </Box>
-                                <Box >
+                      const date = new Date(Date.parse(postComment.date_posted));
+
+                      const commentListItem =
+                        <Box
+                          display="flex"
+                          flexDirection="row"
+                          width="100%"
+                          marginBottom={"3px"}
+                          // height={"30px"}
+                        >
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Text>
+                              {postComment.username}
+                            </Text>
+                          </Box>
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Text>
+                              POST
+                            </Text>
+                          </Box>
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Text>
+                              {`${date.getDate()}.${date.getMonth()+1}.${date.getFullYear()}`}
+                            </Text>
+                          </Box>
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            // maxWidth={"calc(100% / 7)"}
+                          >
+                            <Text
+                              // width={"calc(100% / 7)"}
+                              // overflow={"hidden"}
+                              // whiteSpace={"nowrap"}
+                            >
+                              {postComment.text}
+                            </Text>
+                          </Box>
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Box
+                              padding={"3px"}
+                              borderRadius={"4px"}
+                              textAlign={"center"}
+                              backgroundColor={postComment.status === "POSITIVE" ? "#8ecc8e" : "#FFCCCC"}
+                            >
+                              {postComment.status === "POSITIVE" ? "non-negative" : "negative"}
+                            </Box>
+                          </Box>
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            flexWrap="wrap"
+                          >
+                            {
+                              postComment.statusTags.length >= 1
+                                ? postComment.statusTags.map(statusTag => {
+                                  return (
                                     <Box
-                                        marginLeft={"5px"}
-                                        marginRight={"5px"}
-                                        marginTop={"3px"}
-                                        marginBottom={"3px"}
-                                        borderRadius={"4px"}
-                                        textAlign={"center"}
-                                        backgroundColor={commentStatus === "POSITIVE" ? "#8ecc8e" : "#FFCCCC"}
+                                      padding={"3px"}
+                                      borderRadius={"4px"}
+                                      textAlign={"center"}
+                                      backgroundColor={"#ecf0f1"}
+                                      marginRight="3px"
                                     >
-                                        {commentStatus === "POSITIVE" ? "non-negative" : "negative"}
+                                      {statusTag.toLowerCase()}
                                     </Box>
-                                </Box>
-                                <Box >
-                                    <Box
-                                        height={"100%"}
-                                        display={"flex"}
-                                        alignItems={"center"}
-                                        justifyContent={"center"}
-                                        marginLeft={"5px"}
-                                        marginRight={"5px"}
-                                    >
-                                        <Checkbox
-                                            isChecked={selectedComments[comment.id] === true}
-                                            onChange={() => {
-                                                selectComment(comment.id);
-                                            }}
-                                        />
-                                    </Box>
-                                </Box>
-                            </>
-                        // </Flex>
-                        return commentListItem;
+                                  )
+                                })
+                                : (
+                                  <Box
+                                    padding={"3px"}
+                                    borderRadius={"4px"}
+                                    textAlign={"center"}
+                                    backgroundColor={"#ecf0f1"}
+                                    marginRight="3px"
+                                  >
+                                    {"none"}
+                                  </Box>
+                                )
+                            }
+                          </Box>
+                          <Box
+                            flex={1}
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Box
+                              display={"flex"}
+                              alignItems={"center"}
+                              justifyContent={"center"}
+                            >
+                              <Checkbox
+                                // isChecked={selectedCommentsIds[postComment.id]}
+                                // onChange={() => {
+                                //   onToggleCommentSelection(postComment.id);
+                                // }}
+                              />
+                            </Box>
+                          </Box>
+                        </Box>
+                      // </Flex>
+
+                      return commentListItem;
+
                     })
-                }
-            </Grid>
+                  }
+                </Box>
+            }
+          </Box>
+            {/*<Grid*/}
+            {/*    width={"100%"}*/}
+            {/*    gridTemplateColumns={"repeat(7, auto)"}*/}
+            {/*    flexGrow={1}*/}
+            {/*    height={"auto"}*/}
+            {/*    overflow={"auto"}*/}
+            {/*>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*        borderTopLeftRadius={"8px"}*/}
+            {/*        borderBottomLeftRadius={"8px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"}>*/}
+            {/*            FROM*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*        // borderTopLeftRadius={"8px"}*/}
+            {/*        // borderBottomLeftRadius={"8px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"}>*/}
+            {/*            TO*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"} >*/}
+            {/*            DATE*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"} >*/}
+            {/*            TEXT*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"}>*/}
+            {/*            LIKES*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"}>*/}
+            {/*            STATUS*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    <Box*/}
+            {/*        backgroundColor={"#bdc3c7"}*/}
+            {/*        height={"30px"}*/}
+            {/*        borderTopRightRadius={"8px"}*/}
+            {/*        borderBottomRightRadius={"8px"}*/}
+            {/*    >*/}
+            {/*        <Box marginLeft={"5px"}>*/}
+            {/*            SELECT*/}
+            {/*        </Box>*/}
+            {/*    </Box>*/}
+            {/*    /!*</GridItem>*!/*/}
+
+            {/*  {*/}
+            {/*    isLoading && (*/}
+            {/*      <Box*/}
+            {/*        display="flex"*/}
+            {/*        flexDirection="row"*/}
+            {/*        alignItems={"center"}*/}
+            {/*        justifyContent={"center"}*/}
+            {/*      >*/}
+            {/*        <Text marginRight={"5px"}>Loading</Text>*/}
+            {/*        <Spinner/>*/}
+            {/*      </Box>*/}
+            {/*    )*/}
+            {/*  }*/}
+
+            {/*    {*/}
+            {/*      !isLoading && comments.map(comment => {*/}
+
+            {/*            let commentStatus = "POSITIVE";*/}
+            {/*            if (*/}
+            {/*                parseFloat(comment.insult) >= insultThreshold*/}
+            {/*                || parseFloat(comment.identity_hate) >= identityHateThreshold*/}
+            {/*                || parseFloat(comment.obscene) >= obsceneThreshold*/}
+            {/*                || parseFloat(comment.severe_toxic) >= severeToxicThreshold*/}
+            {/*                || parseFloat(comment.threat) >= threatThreshold*/}
+            {/*                || parseFloat(comment.toxic) >= toxicThreshold*/}
+            {/*            ){*/}
+            {/*                commentStatus = "NEGATIVE"*/}
+            {/*            }*/}
+            {/*            const commentListItem =*/}
+            {/*                <>*/}
+            {/*                    <Box>*/}
+            {/*                        <Box marginLeft={"5px"}>*/}
+            {/*                            {comment.username ? comment.username : "username"}*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                    <Box >*/}
+            {/*                        <Box marginLeft={"5px"} marginRight={"5px"}>*/}
+            {/*                            POST*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                    <Box >*/}
+            {/*                        <Box marginLeft={"5px"} marginRight={"5px"}>*/}
+            {/*                            03.06.2000 & 18:00*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                    <Box >*/}
+            {/*                        <Box marginLeft={"5px"} marginRight={"5px"}>*/}
+            {/*                            {comment.text}*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                    <Box >*/}
+            {/*                        <Box marginLeft={"5px"} marginRight={"5px"}>*/}
+            {/*                            LIKES*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                    <Box >*/}
+            {/*                        <Box*/}
+            {/*                            marginLeft={"5px"}*/}
+            {/*                            marginRight={"5px"}*/}
+            {/*                            marginTop={"3px"}*/}
+            {/*                            marginBottom={"3px"}*/}
+            {/*                            borderRadius={"4px"}*/}
+            {/*                            textAlign={"center"}*/}
+            {/*                            backgroundColor={commentStatus === "POSITIVE" ? "#8ecc8e" : "#FFCCCC"}*/}
+            {/*                        >*/}
+            {/*                            {commentStatus === "POSITIVE" ? "non-negative" : "negative"}*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                    <Box >*/}
+            {/*                        <Box*/}
+            {/*                            height={"100%"}*/}
+            {/*                            display={"flex"}*/}
+            {/*                            alignItems={"center"}*/}
+            {/*                            justifyContent={"center"}*/}
+            {/*                            marginLeft={"5px"}*/}
+            {/*                            marginRight={"5px"}*/}
+            {/*                        >*/}
+            {/*                            <Checkbox*/}
+            {/*                                isChecked={selectedComments[comment.id] === true}*/}
+            {/*                                onChange={() => {*/}
+            {/*                                    selectComment(comment.id);*/}
+            {/*                                }}*/}
+            {/*                            />*/}
+            {/*                        </Box>*/}
+            {/*                    </Box>*/}
+            {/*                </>*/}
+            {/*            // </Flex>*/}
+            {/*            return commentListItem;*/}
+            {/*        })*/}
+            {/*    }*/}
+            {/*</Grid>*/}
             {/*</Box>*/}
         </Flex>
     )
@@ -370,7 +698,7 @@ export const SearchCommentsByMeaning = reflect({
     bind: {
         state: model.$state,
         searchText: model.$searchText,
-        comments: model.$comments,
+        comments: model.$processedComments,
         onClick: model.searchButtonClicked,
         selectedComments: model.$selectedComments,
         selectComment: model.commentSelected,
@@ -379,7 +707,7 @@ export const SearchCommentsByMeaning = reflect({
         onChangeReplyModalState: model.isReplyModalOpenChanged,
         replyText: model.$replyText,
         onChangeReplyText: model.replyTextChanged,
-        thresholds: mediaModelUpdated.$thresholds
+        thresholds: thresholdsModel.$thresholds,
     },
 });
 

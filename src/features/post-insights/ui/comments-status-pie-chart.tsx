@@ -1,13 +1,14 @@
 import React from 'react';
 import {useStore} from "effector-react";
-import {mediaModel, mediaModelUpdated} from "../../../entities/media";
+import {mediaModel} from "entities/media";
+import { commentsManagementBaseModel } from "features/comments-management";
 import {Box, Flex, Heading, Text} from "@chakra-ui/react";
 import {RadialChart} from "react-vis";
 
 
 export const CommentsStatusPieChart = () => {
 
-    const postComments = useStore(mediaModelUpdated.$processedCommentsWithStatus);
+    const postComments = useStore(commentsManagementBaseModel.$processedCommentsWithStatus);
     const negativeComments = postComments.filter((postComment) => {
         if (postComment.status === "POSITIVE" ){
             return false;

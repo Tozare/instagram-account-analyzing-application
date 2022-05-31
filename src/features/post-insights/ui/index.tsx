@@ -11,27 +11,38 @@ import {CommentsStatusPieChart} from "./comments-status-pie-chart";
 
 export const PostInsights = () => {
 
-
-
     return (
-        <Box backgroundColor={"#FFFFFF"} padding={"15px"} width={"100%"} height={"auto"} minHeight={"100%"} borderRadius={"10px"}>
-            <Heading as={"h1"} marginLeft={"auto"} marginRight={"auto"} marginBottom={"40px"}>Post insights</Heading>
+        <Box
+          backgroundColor={"#FFFFFF"}
+          padding={"15px"}
+          width={"100%"}
+          height={"100%"}
+          display="flex"
+          flexDirection="column"
+          borderRadius={"10px"}
+        >
+          <Heading as={"h1"} marginLeft={"auto"} marginRight={"auto"} marginBottom={"40px"}>Post insights</Heading>
+          <Box
+            flexGrow={1}
+            overflowY="auto"
+          >
             <Flex
-                marginBottom={"35px"}
+              marginBottom={"35px"}
             >
-                <PostEngagement/>
-                <PostSaved/>
+              <PostEngagement/>
+              <PostSaved/>
             </Flex>
             <Flex
-                marginBottom={"35px"}
+              marginBottom={"35px"}
             >
-                <PostReach/>
+              <PostReach/>
             </Flex>
             <Flex
 
             >
-                <CommentsStatusPieChart/>
+              <CommentsStatusPieChart/>
             </Flex>
+          </Box>
         </Box>
     )
 }
